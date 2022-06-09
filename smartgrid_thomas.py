@@ -43,14 +43,14 @@ def make_wire(grid, battery, house, wire_num):
     else:
         y_direction = int(y_dif / abs(y_dif))
 
-    while house_x != battery_x:
+    while house_x != wire_x:
         wire_x += x_direction
         print(x_direction)
         wire_points.append((wire_x, wire_y))
         print(wire_x)
         grid[wire_x][wire_y] = 3
 
-    while house_y != battery_y:
+    while house_y != wire_y:
         wire_y += y_direction
         wire_points.append((wire_x, wire_y))
         grid[wire_x][wire_y] = 3
