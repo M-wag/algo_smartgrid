@@ -3,13 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.colors as colors
+import random
 
 class House:
     def __init__(self, number, x, y, output):
         self._id = number
         self._output = output
         self._cabel = None
-        self._coor = (x, y)
+        self._coor = (x, y) 
 
 class Battery:
     def __init__(self, number, x, y, capaciteit):
@@ -43,14 +44,14 @@ def make_wire(grid, battery, house, wire_num):
     else:
         y_direction = int(y_dif / abs(y_dif))
 
-    while house_x != wire_x:
+    while house_x != (wire_x + x_direction):
         wire_x += x_direction
         print(x_direction)
         wire_points.append((wire_x, wire_y))
         print(wire_x)
         grid[wire_x][wire_y] = 3
 
-    while house_y != wire_y:
+    while house_y != (wire_y + y_direction):
         wire_y += y_direction
         wire_points.append((wire_x, wire_y))
         grid[wire_x][wire_y] = 3
@@ -83,14 +84,16 @@ if __name__ == "__main__":
 
     i = 0
     wires = []
+    houses = random.shuffle(houses)
     for house in houses:
+        battery = random.choice(batteries)
         wire = make_wire(grid, battery._coor, house._coor, i)
         wires.append(wire)
 
     fig, ax = plt.subplots()
     colors_list = ['white', 'green', 'red', 'blue']
     cmap = colors.ListedColormap(colors_list)
-    bounds = [0,1,2,3]
+    bounds = [0,1,2,3,4]
     norm = colors.BoundaryNorm(bounds, cmap.N)
     im = ax.imshow(grid, cmap=cmap, norm=norm)
     plt.show()
