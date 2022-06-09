@@ -7,7 +7,7 @@ from matplotlib.colors import ListedColormap
 class Cell():
 
     def __init__ (self):
-        self._container = {"house_id": None, "battery_id": None, "wire_id": []}
+        self._container = {"house_id": None, "battery
     
     def add_item(self, type, id):
         if type == "wire_id":
