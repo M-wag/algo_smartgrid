@@ -71,8 +71,6 @@ if __name__ == "__main__":
         y = int(row['y'])
         house = House(index, x, y, row['maxoutput'])
         houses.append(house)
-        x = int(row['x'])
-        y = int(row['y'])
         grid[x][y] = 1
 
     batteries = []
