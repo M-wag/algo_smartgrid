@@ -3,6 +3,7 @@ import random
 class Houses:
     def __init__(self, file):
         self.house_list = self.load(file)
+        self.shuffle()
 
     def load(self, file):
         df_houses = pd.read_csv(file)
