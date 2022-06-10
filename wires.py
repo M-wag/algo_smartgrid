@@ -1,9 +1,13 @@
-# class wire & class wires met make functie
+class Wire:
+    def __init__(self, number, list_coor):
+        self._id = number
+        self._list_coor = list_coor
 class Wires:
     def __init__(self):
-        
+        self.wire_list = []
+        self.wire_num = 0
 
-    def make_wire(battery, house, wire_num):
+    def make_wire(self, battery, house):
         wire_points = []
         battery_x, battery_y = battery
         house_x, house_y = house
@@ -30,13 +34,7 @@ class Wires:
             wire_y += y_direction
             wire_points.append((wire_x, wire_y))
 
-        wire = Wire(wire_num, wire_points)
-        return wire
-
-
-class Wire:
-    def __init__(self, number, list_coor):
-        self._id = number
-        self._list_coor = list_coor
-
-    
+        wire = Wire(self.wire_num, wire_points)
+        self.wire_list.append(wire)
+        self.wire_num += 1
+ 
