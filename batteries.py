@@ -3,6 +3,7 @@ import random
 class Batteries:
     def __init__(self, file):
         self.battery_list = self.load(file)
+        self.shuffle()
 
     def load(self, file):
         batteries = []
