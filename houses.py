@@ -1,12 +1,13 @@
 # class house & class houses
 
 import pandas as pd
+import random
 from typing import Dict, Tuple, Type
 
 
 class House():
 
-    def __init__(self, position: Tuple[int, int], max_output: int) -> None:
+    def __init__(self, position: Tuple[int, int], max_output: float) -> None:
         self.position = position
         self.max_output = max_output
         self.battery = None
@@ -21,14 +22,19 @@ class Houses():
 
     def __init__(self):
         self.dict_houses = {}
+        self.order = None
 
     # load houses from csv_file into dictionary
     def load(self, houses_csv) -> Dict[Type[House]]:
         df_houses = pd.read_csv(houses_csv)
 
-        for house_id, row in df_houses.iterrows():
+        for id, row in df_houses.iterrows():
             position = (int(row['x']), int(row['y']))
-            max_output = int(row['maxoutput'])
-            self.dict_houses[house_id] = House(position, max_output)
+            max_output = float(row['maxoutput'])
+            self.dict_houses[id] = House(position, max_output)
+            self.order = list(self.dict_houses.keys())
 
         return self.dict_houses
+
+    def shuffle_order(self):
+        random.shuffle(self.order)
