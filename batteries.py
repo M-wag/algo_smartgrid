@@ -1,5 +1,3 @@
-# class Battery & class Batteries
-
 import pandas as pd
 import random
 from typing import Tuple
@@ -42,3 +40,11 @@ class Batteries:
 
     def shuffle_order(self) -> None:
         random.shuffle(self.order)
+
+    def get_batteries(self) -> None:
+        return self.dict_batteries
+    
+    def get_coords(self):
+        batteries = list(self.dict_batteries.values())
+        coord_batteries = [battery.position for battery in batteries]
+        return coord_batteries

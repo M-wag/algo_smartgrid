@@ -2,4 +2,5 @@
 
 
 def calculate_cost(wires, batteries) -> float:
+    print('calc')
     pass

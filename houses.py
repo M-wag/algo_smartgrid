@@ -1,5 +1,3 @@
-# class house & class houses
-
 import pandas as pd
 import random
 from typing import Dict, Tuple, Type
@@ -25,7 +23,7 @@ class Houses():
         self.order = None
 
     # load houses from csv_file into dictionary
-    def load(self, houses_csv) -> Dict[Type[House]]:
+    def load(self, houses_csv) -> Dict[int, Type[House]]:
         df_houses = pd.read_csv(houses_csv)
 
         for id, row in df_houses.iterrows():
@@ -38,3 +36,11 @@ class Houses():
 
     def shuffle_order(self):
         random.shuffle(self.order)
+
+    def get_houses(self) -> None:
+        return self.dict_houses
+    
+    def get_coords(self):
+        houses = list(self.dict_houses.values())
+        coord_houses = [house.position for house in houses]
+        return coord_houses
