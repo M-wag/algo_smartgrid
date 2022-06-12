@@ -1,6 +1,7 @@
 import pandas as pd
 import random
-from typing import Tuple
+from typing import Tuple, Type
+from houses import House
 
 
 class Battery:

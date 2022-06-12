@@ -29,7 +29,7 @@ def main(houses_input, batteries_input, output):
     # Plot grid and save
     visualize_grid(houses.get_member_coords(), batteries.get_member_coords(), wires.get_paths())
 
-    return calculate_cost(wires, batteries)
+    return calculate_cost(houses, batteries)
 
 
 if __name__ == "__main__":
