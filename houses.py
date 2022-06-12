@@ -14,13 +14,16 @@ class House():
     # assign wire to house (self.battery can be assigned here as well)
     def assign_wire(self, wire) -> None:
         self.wire = wire
-
+    
+    def connect(self, battery) -> None:
+        self.battery = battery
 
 class Houses():
 
     def __init__(self):
         self.dict_houses = {}
         self.order = None
+        self.connected_houses = []
 
     # load houses from csv_file into dictionary
     def load(self, houses_csv) -> Dict[int, Type[House]]:
@@ -37,10 +40,9 @@ class Houses():
     def shuffle_order(self):
         random.shuffle(self.order)
 
-    def get_houses(self) -> None:
-        return self.dict_houses
+    def get_members(self):
+        return self.dict_houses.values()
     
-    def get_coords(self):
-        houses = list(self.dict_houses.values())
-        coord_houses = [house.position for house in houses]
-        return coord_houses
+    def get_member_coords(self) -> list[Tuple[int, int]]: 
+        member_coords = [house.position for house in self.dict_houses.values()]
+        return member_coords

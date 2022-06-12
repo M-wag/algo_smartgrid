@@ -9,7 +9,7 @@ class Battery:
         self.position = position
         self.capacity = capacity
         self.total_input = 0
-        self.houses = set()
+        self.houses = []
 
     def can_connect(self, house_output: float) -> bool:
         if self.total_input + house_output > self.capacity:
@@ -17,7 +17,7 @@ class Battery:
         return True
 
     def connect(self, house) -> None:
-        self.houses.add(house)
+        self.houses.append(house)
         self.total_input += house.max_output
 
 
@@ -40,11 +40,14 @@ class Batteries:
 
     def shuffle_order(self) -> None:
         random.shuffle(self.order)
-
-    def get_batteries(self) -> None:
-        return self.dict_batteries
     
-    def get_coords(self):
-        batteries = list(self.dict_batteries.values())
-        coord_batteries = [battery.position for battery in batteries]
-        return coord_batteries
+    def get_members(self):
+        return self.dict_batteries.values()
+
+    def connect(self, house):
+        self.houses.append(house)
+        self.total_input += house.max_output
+    
+    def get_member_coords(self) -> list[Tuple[int, int]]: 
+        member_coords = [battery.position for battery in self.dict_batteries.values()]
+        return member_coords
