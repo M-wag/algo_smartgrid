@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import (AutoMinorLocator, MultipleLocator)
 
 def visualize_grid(house_coords, battery_coords, wire_paths):
-    print(wire_paths)
     fig, ax = plt.subplots()
     for path in wire_paths:
         x = []

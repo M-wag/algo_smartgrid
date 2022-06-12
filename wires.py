@@ -1,4 +1,4 @@
-from houses import House, Houses
+from houses import Houses
 from batteries import Batteries
 from typing import Type, Tuple
 import scheduler

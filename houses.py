@@ -1,7 +1,6 @@
 import pandas as pd
 import random
 from typing import Dict, Tuple, Type
-from wires import Wire
 from batteries import Battery
 
 
@@ -14,7 +13,7 @@ class House():
         self.wire = None
 
     # assign wire to house
-    def assign_wire(self, wire: Type[Wire]) -> None:
+    def assign_wire(self, wire) -> None:
         self.wire = wire
     
     def connect(self, battery: Type[Battery]) -> None:
