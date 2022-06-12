@@ -1,5 +1,7 @@
 # class wire & class wires met make functie
-from typing import List, Tuple
+from typing import List, Tuple, Type
+from houses import House
+from batteries import Battery
 
 
 class Wire:
@@ -14,7 +16,7 @@ class Wires:
         self.dict_wires = {}
         self.wire_id = 0
 
-    def make_wire(self, battery, house) -> None:
+    def make_wire(self, battery: Type[Battery], house: Type[House]) -> None:
         wire_points = []
         battery_x, battery_y = battery.position
         house_x, house_y = house.position

@@ -2,7 +2,8 @@
 
 import pandas as pd
 import random
-from typing import Tuple
+from typing import Tuple, Type
+from houses import House
 
 
 class Battery:
@@ -18,7 +19,7 @@ class Battery:
             return False
         return True
 
-    def connect(self, house) -> None:
+    def connect(self, house: Type[House]) -> None:
         self.houses.add(house)
         self.total_input += house.max_output
 

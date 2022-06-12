@@ -1,7 +1,10 @@
 # takes in the amount of wire used and batteries used, and calculates the cost
+from typing import Type
+from batteries import Batteries
+from houses import Houses
 
 
-def calculate_cost(houses, batteries) -> float:
+def calculate_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
     total_wire = 0
     for house in houses.dict_houses.values():
         house_x, house_y = house.position
