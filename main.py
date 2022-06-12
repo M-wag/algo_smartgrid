@@ -26,7 +26,7 @@ def main(houses_input, batteries_input, output):
     # plot grid and save
     # TODO
 
-    return calculate_cost(wires, batteries)
+    return calculate_cost(houses, batteries)
 
 
 if __name__ == "__main__":

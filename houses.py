@@ -13,9 +13,12 @@ class House():
         self.battery = None
         self.wire = None
 
-    # assign wire to house (self.battery can be assigned here as well)
+    # assign wire to house
     def assign_wire(self, wire) -> None:
         self.wire = wire
+    
+    def assign_battery(self, battery) -> None:
+        self.battery = battery
 
 
 class Houses():
