@@ -8,7 +8,7 @@ from visualize import visualize_grid
 
 
 def main(houses_input: str, batteries_input: str, output_pictures: str, output_file: str, n: int) -> None:
-    lowest_cost = 0 
+    lowest_cost = 1000000
     # Generate wires
     for i in range(n):
         # init
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     parser.add_argument("batteries_input",
                         help="input file for the batteries (csv)")
     parser.add_argument("n",
-                        help="Number of iterations",)
+                        help="number of iterations", type=int)
     parser.add_argument("--output_picture",
                         help="output file for the plotted grid (png)",
                         required=False)
@@ -58,4 +58,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Run our line function with provided arguments
-    main(args.houses_input, args.batteries_input, args.output_pictures, args.output_file, args.n)
+    main(args.houses_input, args.batteries_input, args.output_picture, args.output_file, args.n)
