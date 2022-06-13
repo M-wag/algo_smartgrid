@@ -4,6 +4,31 @@ from typing import Tuple, Type, List, Dict
 
 
 class Battery:
+    """
+    A class to represent a Battery.
+
+    ...
+
+    Attributes
+    ----------
+    position : Tuple[int, int]
+        x and y coordinates of the battery
+    capacity : float
+        total capacity of the battery
+    age : int
+        age of the person
+    total_input : float
+        total accumulated output from houses
+    houses : List[Type[House]]
+        list of all connected houses
+
+    Methods
+    -------
+    can_connect(house_output: float) -> bool:
+        returns whether or not a house can connect
+    connect(self, house: Type[House]) -> None:
+        adds the house to the "houses" list and calculates the total_input
+    """
 
     def __init__(self, position: Tuple[int, int], capacity: float, container) -> None:
         self.position = position

@@ -2,14 +2,8 @@ from houses import Houses, House
 from batteries import Batteries, Battery
 from typing import Type, Tuple, List
 import scheduler
-import path_finders
+from path_finders import random_path_finder
 import numpy as np
-
-grid_size = 51
-
-
-schedule = scheduler.random_scheduler
-find_path = path_finders.random_path_finder
 
 
 class Wire():
@@ -26,7 +20,6 @@ class Wire():
 class Wires():
 
     def __init__(self) -> None:
-        self.wire_grid = np.zeros((grid_size, grid_size))
         self.wires = {}
 
     def generate(self, houses: Type[Houses],
@@ -47,10 +40,9 @@ class Wires():
                 battery_coord = battery.position
                 if battery.can_connect(house.max_output):
                     self.connect(house, battery)
-                    wire_path = find_path(house_coord, battery_coord)
+                    wire_path = random_path_finder(house_coord, battery_coord)
                     # Make new wire
                     wire = Wire(wire_id, house, battery, wire_path)
-                    self.add(wire)
                     wire_id += 1
                     has_battery = True
                     break
@@ -58,10 +50,6 @@ class Wires():
             if has_battery is False:
                 return False
         return True
-
-    def add(self, wire) -> None:
-        self.wires[wire.id] = wire
-        # TODO Add to wire grid
 
     def connect(self, house, battery):
         house.connect(battery)
