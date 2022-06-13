@@ -15,9 +15,10 @@ class House():
     # assign wire to house
     def assign_wire(self, wire) -> None:
         self.wire = wire
-    
+
     def connect(self, battery: Type[Battery]) -> None:
         self.battery = battery
+
 
 class Houses():
 
@@ -26,7 +27,6 @@ class Houses():
         self.order = None
         self.connected_houses = []
         self.load(houses_csv)
-
 
     # load houses from csv_file into dictionary, called upon init
     def load(self, houses_csv: str) -> Dict[int, Type[House]]:
@@ -45,13 +45,13 @@ class Houses():
 
     def get_members(self):
         return self.dict_houses.values()
-    
-    def get_member_coords(self) -> List[Tuple[int, int]]: 
+
+    def get_member_coords(self) -> List[Tuple[int, int]]:
         member_coords = [house.position for house in self.dict_houses.values()]
         return member_coords
 
     def all_houses_connected(self):
         for house in self.dict_houses.values():
-            if house.battery == None:
+            if house.battery is None:
                 return False
         return True

@@ -1,8 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.ticker import (AutoMinorLocator, MultipleLocator)
+from typing import List, Tuple
+from matplotlib.ticker import (MultipleLocator)
 
-def visualize_grid(house_coords, battery_coords, wire_paths):
+
+def visualize_grid(house_coords: List[Tuple[int, int]],
+                   battery_coords: List[Tuple[int, int]],
+                   wire_paths: List[List[Tuple[int, int]]]) -> None:
+
     fig, ax = plt.subplots()
     for path in wire_paths:
         x = []
@@ -12,14 +17,14 @@ def visualize_grid(house_coords, battery_coords, wire_paths):
             y.append(coord[1])
         x = np.array(x)
         y = np.array(y)
-    
-        plt.plot(x, y, color = 'black')
+
+        plt.plot(x, y, color='black')
 
     for coord in house_coords:
-        plt.scatter(coord[0], coord[1], s = 25, color='blue', marker='s')
+        plt.scatter(coord[0], coord[1], s=25, color='blue', marker='s')
 
     for coord in battery_coords:
-        plt.scatter(coord[0], coord[1], s = 45, color='red', marker='s')
+        plt.scatter(coord[0], coord[1], s=45, color='red', marker='s')
 
     # Change locators ticks to show every 20.
     ax.xaxis.set_major_locator(MultipleLocator(1))

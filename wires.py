@@ -13,9 +13,9 @@ find_path = path_finders.random_path_finder
 
 
 class Wire():
-    
-    def __init__(self, id: int, house: Type[House], battery: Type[Battery], 
-                    path: List[Tuple[int, int]]) -> None:
+
+    def __init__(self, id: int, house: Type[House], battery: Type[Battery],
+                 path: List[Tuple[int, int]]) -> None:
         self.id = id
         self.house = house
         self.battery = battery
@@ -28,12 +28,13 @@ class Wires():
         self.wire_grid = np.zeros((grid_size, grid_size))
         self.wires = {}
 
-    def generate(self, houses: Type[Houses], batteries: Type[Batteries]) -> None:
+    def generate(self, houses: Type[Houses],
+                 batteries: Type[Batteries]) -> None:
         """Generate the wires between the houses and the batteries"""
-        
+
         # Get coordinates for all houses and batteries
-        houses_with_coords = {house : house.position for house in houses.get_members()}  
-        batteries_with_coords = {battery : battery.position for battery in batteries.get_members()}
+        houses_with_coords = {house: house.position for house in houses.get_members()}                 # noqa: E501
+        batteries_with_coords = {battery: battery.position for battery in batteries.get_members()}     # noqa: E501
 
         # TODO shuffle dictionary
         # # Put both dictionaries through the scheduler
@@ -46,7 +47,7 @@ class Wires():
         # !!! the while-loop seems unnecessary for our random-version !!!
 
         while True:
-            #Pairing Algorithm 
+            # Pairing Algorithm
             # Iterate through houses
             for house, house_coord in houses_with_coords.items():
                 for battery, battery_coord in batteries_with_coords.items():
@@ -69,12 +70,12 @@ class Wires():
 
     def add(self, wire) -> None:
         self.wires[wire.id] = wire
-        #TODO Add to wire grid
+        # TODO Add to wire grid
 
     def connect(self, house, battery):
         house.connect(battery)
         battery.connect(house)
-    
+
     def get_paths(self) -> List[List[Tuple[int, int]]]:
         paths = [wire.path for wire in self.wires.values()]
-        return paths  
+        return paths
