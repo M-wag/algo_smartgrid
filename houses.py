@@ -45,6 +45,7 @@ class Houses():
 
     def shuffle_order(self):
         random.shuffle(self.order)
+        return self.order
 
     def get_members(self):
         return self.dict_houses.values()

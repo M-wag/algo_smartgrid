@@ -42,6 +42,7 @@ class Batteries:
 
     def shuffle_order(self) -> None:
         random.shuffle(self.order)
+        return self.order
 
     def get_members(self):
         return self.dict_batteries.values()
