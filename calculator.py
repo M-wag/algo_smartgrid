@@ -5,6 +5,17 @@ from houses import Houses
 
 
 def calculate_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
+    '''
+    Returns the total cost of the SmartGrid
+
+            Parameters:
+                    houses (Houses): A class containing House objects
+                    batteries (Batteries): A class containing Batteries objects
+
+            Returns:
+                    Total cost (float): The total cost of the SmartGrid
+    '''
+
     total_wire = 0
     for house in houses.get_members():
         house_x, house_y = house.position
@@ -18,4 +29,5 @@ def calculate_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
     for battery in batteries.get_members():
         total_batteries += 1
 
-    return total_wire * 9 + total_batteries * 5000
+    total_cost = total_wire * 9 + total_batteries * 5000
+    return total_cost
