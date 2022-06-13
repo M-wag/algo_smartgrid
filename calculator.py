@@ -9,11 +9,14 @@ def calculate_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
     Returns the total cost of the SmartGrid
 
             Parameters:
-                    houses (Houses): A class containing House objects
-                    batteries (Batteries): A class containing Batteries objects
+                    houses (Houses): 
+                        A class containing House objects
+                    batteries (Batteries): 
+                        A class containing Batteries objects
 
             Returns:
-                    Total cost (float): The total cost of the SmartGrid
+                    Total cost (float):
+                         The total cost of the SmartGrid
     '''
 
     total_wire = 0
