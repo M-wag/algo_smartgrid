@@ -6,7 +6,8 @@ from matplotlib.ticker import (MultipleLocator)
 
 def visualize_grid(house_coords: List[Tuple[int, int]],
                    battery_coords: List[Tuple[int, int]],
-                   wire_paths: List[List[Tuple[int, int]]]) -> None:
+                   wire_paths: List[List[Tuple[int, int]]],
+                   output) -> None:
 
     fig, ax = plt.subplots()
     for path in wire_paths:
@@ -35,5 +36,4 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
     # ax.set_yticks(np.arange(0, 50, 10))
 
     plt.grid(True, which='major')
-    plt.show()
-    plt.savefig('smartgrid.png')
+    plt.savefig(output)
