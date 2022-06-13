@@ -1,6 +1,6 @@
-from houses import Houses
-from batteries import Batteries
-from typing import Type, Tuple
+from houses import Houses, House
+from batteries import Batteries, Battery
+from typing import Type, Tuple, List
 import scheduler
 import path_finders
 import numpy as np
@@ -11,18 +11,30 @@ grid_size = 51
 schedule = scheduler.random_scheduler
 find_path = path_finders.random_path_finder
 
+
+class Wire():
+
+    def __init__(self, id: int, house: Type[House], battery: Type[Battery],
+                 path: List[Tuple[int, int]]) -> None:
+        self.id = id
+        self.house = house
+        self.battery = battery
+        self.path = path
+
+
 class Wires():
 
     def __init__(self) -> None:
         self.wire_grid = np.zeros((grid_size, grid_size))
         self.wires = {}
 
-    def generate(self, houses: Type[Houses], batteries: Type[Batteries]) -> None:
+    def generate(self, houses: Type[Houses],
+                 batteries: Type[Batteries]) -> None:
         """Generate the wires between the houses and the batteries"""
-        
+
         # Get coordinates for all houses and batteries
-        houses_with_coords = {house : house.position for house in houses.get_members()}  
-        batteries_with_coords = {battery : battery.position for battery in batteries.get_members()}
+        houses_with_coords = {house: house.position for house in houses.get_members()}                 # noqa: E501
+        batteries_with_coords = {battery: battery.position for battery in batteries.get_members()}     # noqa: E501
 
         # TODO shuffle dictionary
         # # Put both dictionaries through the scheduler
@@ -31,20 +43,17 @@ class Wires():
 
         wire_id = 0
         iterations = 0
+
+        # !!! the while-loop seems unnecessary for our random-version !!!
+
         while True:
-            #Pairing Algorithm 
+            # Pairing Algorithm
             # Iterate through houses
-            for ho, ho_c in houses_with_coords.items():
-                for bat, bat_c in batteries_with_coords.items():
-                    if bat.can_connect(ho.max_output):
-                        # Save the connectable entities
-                        house = ho
-                        house_coord = ho_c
-                        battery = bat
-                        battery_coord = bat_c
-                        # Add to wire id  
-                        wire_id += 1
+            for house, house_coord in houses_with_coords.items():
+                for battery, battery_coord in batteries_with_coords.items():
+                    if battery.can_connect(house.max_output):
                         break
+                break
             # Remove connected house from houses dictionary
             houses_with_coords.pop(house)
 
@@ -53,29 +62,20 @@ class Wires():
             # Make new wire
             wire = Wire(wire_id, house, battery, wire_path)
             self.add(wire)
+            wire_id += 1
 
             # Break if all houses are connected or iterations > 250
-            # TODO make funtion in Houses which returns whether all houses are connected
-            if len(houses_with_coords) == 0 or iterations > 250:
+            if houses.all_houses_connected() or iterations > 250:
                 break
 
     def add(self, wire) -> None:
         self.wires[wire.id] = wire
-        #TODO Add to wire grid
+        # TODO Add to wire grid
 
     def connect(self, house, battery):
         house.connect(battery)
         battery.connect(house)
-    
-    def get_paths(self) -> list[list[Tuple[int, int]]]:
+
+    def get_paths(self) -> List[List[Tuple[int, int]]]:
         paths = [wire.path for wire in self.wires.values()]
         return paths
-
-class Wire():
-    def __init__(self, id, house, battery, path) -> None:
-        self.id = id
-        self.house = house
-        self.battery = battery
-        self.path = path
-
-        
