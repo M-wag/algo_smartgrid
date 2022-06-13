@@ -42,6 +42,7 @@ class Wires():
                     wire_path = random_path_finder(house_coord, battery_coord)
                     # Make new wire
                     wire = Wire(wire_id, house, battery, wire_path)
+                    self.wires[wire_id] = wire
                     wire_id += 1
                     has_battery = True
                     break

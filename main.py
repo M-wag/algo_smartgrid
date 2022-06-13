@@ -7,30 +7,30 @@ from calculator import calculate_cost
 from visualize import visualize_grid
 
 
-def main(houses_input: str, batteries_input: str, output_picture: str, output_file: str, n: int) -> None:
+def main(wijk_num: str, n: int) -> None:
     lowest_cost = 1000000
     # Generate wires
     for i in range(n):
         # init
-        houses = Houses(houses_input)
-        batteries = Batteries(batteries_input)
+        houses = Houses(f'district-{wijk_num}_houses.csv')
+        batteries = Batteries(f'district-{wijk_num}_batteries.csv')
         wires = Wires()
         # Make wires 
         if wires.generate(houses, batteries):
             cost = calculate_cost(houses, batteries)
-            print(cost)
+            print(i, cost)
             if cost < lowest_cost:
                 lowest_cost = cost
                 # Plot grid and save
                 visualize_grid(houses.get_member_coords(),
                    batteries.get_member_coords(),
-                   wires.get_paths(), output_picture)
+                   wires.get_paths(), f'smartgrid_wijk_{wijk_num}.png')
         else:
-            print('No valid outcome')
+            print(i,'No valid outcome')
     
-    dict_json = { "district" : 1, "own-costs" : lowest_cost}
+    dict_json = { "district" : wijk_num, "own-costs" : lowest_cost}
     json_object = json.dumps(dict_json, indent = 2)
-    with open(output_file, "w") as outfile:
+    with open(f'smartgrid_wijk_{wijk_num}.json', "w") as outfile:
         outfile.write(json_object)
 
 
@@ -40,20 +40,14 @@ if __name__ == "__main__":
                 "Generates a SmartGrid for input houses and batteries"))
 
     # Adding arguments
-    parser.add_argument("houses_input",
-                        help="input file for the houses (csv)")
-    parser.add_argument("batteries_input",
-                        help="input file for the batteries (csv)")
+    parser.add_argument("wijk",
+                        help="wijk nummer)")
     parser.add_argument("n",
                         help="number of iterations", type=int)
-    parser.add_argument("output_picture",
-                        help="output file for the plotted grid (png)")
-    parser.add_argument("output_file",
-                        help="output file for lowest cost (json)")
     
 
     # Read arguments from command line
     args = parser.parse_args()
 
     # Run our line function with provided arguments
-    main(args.houses_input, args.batteries_input, args.output_picture, args.output_file, args.n)
+    main(args.wijk, args.n)
