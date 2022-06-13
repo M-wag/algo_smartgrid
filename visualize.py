@@ -36,4 +36,4 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
 
     plt.grid(True, which='major')
     plt.show()
-    plt.savefig('smartgrid.png')
+    # plt.savefig('smartgrid.png')

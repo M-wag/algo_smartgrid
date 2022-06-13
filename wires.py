@@ -15,11 +15,12 @@ find_path = path_finders.random_path_finder
 class Wire():
 
     def __init__(self, id: int, house: Type[House], battery: Type[Battery],
-                 path: List[Tuple[int, int]]) -> None:
+                 path: List[Tuple[int, int]], container) -> None:
         self.id = id
         self.house = house
         self.battery = battery
         self.path = path
+        self.container = container
 
 
 class Wires():
@@ -60,7 +61,7 @@ class Wires():
             self.connect(house, battery)
             wire_path = find_path(house_coord, battery_coord)
             # Make new wire
-            wire = Wire(wire_id, house, battery, wire_path)
+            wire = Wire(wire_id, house, battery, wire_path, self)
             self.add(wire)
             wire_id += 1
 
