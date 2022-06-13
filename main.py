@@ -7,7 +7,7 @@ from calculator import calculate_cost
 from visualize import visualize_grid
 
 
-def main(houses_input: str, batteries_input: str, output_pictures: str, output_file: str, n: int) -> None:
+def main(houses_input: str, batteries_input: str, output_picture: str, output_file: str, n: int) -> None:
     lowest_cost = 1000000
     # Generate wires
     for i in range(n):
@@ -24,13 +24,13 @@ def main(houses_input: str, batteries_input: str, output_pictures: str, output_f
                 # Plot grid and save
                 visualize_grid(houses.get_member_coords(),
                    batteries.get_member_coords(),
-                   wires.get_paths())
+                   wires.get_paths(), output_picture)
         else:
             print('No valid outcome')
     
     dict_json = { "district" : 1, "own-costs" : lowest_cost}
     json_object = json.dumps(dict_json, indent = 2)
-    with open("sample.json", "w") as outfile:
+    with open(output_file, "w") as outfile:
         outfile.write(json_object)
 
 
@@ -46,12 +46,10 @@ if __name__ == "__main__":
                         help="input file for the batteries (csv)")
     parser.add_argument("n",
                         help="number of iterations", type=int)
-    parser.add_argument("--output_picture",
-                        help="output file for the plotted grid (png)",
-                        required=False)
-    parser.add_argument("--output_file",
-                        help="output file for lowest cost (json)",
-                        required=False)
+    parser.add_argument("output_picture",
+                        help="output file for the plotted grid (png)")
+    parser.add_argument("output_file",
+                        help="output file for lowest cost (json)")
     
 
     # Read arguments from command line
