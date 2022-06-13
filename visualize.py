@@ -31,4 +31,4 @@ def visualize_grid(house_coords, battery_coords, wire_paths):
 
     plt.grid(True, which='major')
     plt.show()
-    # # plt.savefig('smartgrid.jpg')
+    plt.savefig('smartgrid.png')

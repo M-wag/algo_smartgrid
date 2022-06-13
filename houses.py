@@ -1,6 +1,6 @@
 import pandas as pd
 import random
-from typing import Dict, Tuple, Type
+from typing import Dict, Tuple, Type, List
 from batteries import Battery
 
 
@@ -21,13 +21,15 @@ class House():
 
 class Houses():
 
-    def __init__(self):
+    def __init__(self, houses_csv: str) -> None:
         self.dict_houses = {}
         self.order = None
         self.connected_houses = []
+        self.load(houses_csv)
 
-    # load houses from csv_file into dictionary
-    def load(self, houses_csv) -> Dict[int, Type[House]]:
+
+    # load houses from csv_file into dictionary, called upon init
+    def load(self, houses_csv: str) -> Dict[int, Type[House]]:
         df_houses = pd.read_csv(houses_csv)
 
         for id, row in df_houses.iterrows():
@@ -44,6 +46,12 @@ class Houses():
     def get_members(self):
         return self.dict_houses.values()
     
-    def get_member_coords(self) -> list[Tuple[int, int]]: 
+    def get_member_coords(self) -> List[Tuple[int, int]]: 
         member_coords = [house.position for house in self.dict_houses.values()]
         return member_coords
+
+    def all_houses_connected(self):
+        for house in self.dict_houses.values():
+            if house.battery == None:
+                return False
+        return True

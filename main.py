@@ -1,7 +1,3 @@
-# alles init
-# make wires runnen
-# kosten berekenen en opslaan
-
 import argparse
 
 from houses import Houses
@@ -11,17 +7,12 @@ from calculator import calculate_cost
 from visualize import visualize_grid
 
 
-def main(houses_input, batteries_input, output):
+def main(houses_input: str, batteries_input: str, output: str) -> float:
 
     # init
-    #TODO No use in having init and load seperatly, make init load in CSVs
-    houses = Houses()
-    batteries = Batteries()
+    houses = Houses(houses_input)
+    batteries = Batteries(batteries_input)
     wires = Wires()
-
-    # Load in data
-    houses.load(houses_input)
-    batteries.load(batteries_input)
 
     # Generate wires
     wires.generate(houses, batteries)

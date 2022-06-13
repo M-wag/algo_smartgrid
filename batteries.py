@@ -1,6 +1,6 @@
 import pandas as pd
 import random
-from typing import Tuple, Type
+from typing import Tuple, Type, List, Dict
 
 
 class Battery:
@@ -23,12 +23,13 @@ class Battery:
 
 class Batteries:
 
-    def __init__(self) -> None:
+    def __init__(self, batteries_csv: str) -> None:
         self.dict_batteries = {}
         self.order = None
+        self.load(batteries_csv)
 
-    def load(self, file) -> None:
-        df_batteries = pd.read_csv(file)
+    def load(self, batteries_csv: str) -> Dict[int, Type[Battery]]:
+        df_batteries = pd.read_csv(batteries_csv)
 
         for id, row in df_batteries.iterrows():
             x, y = row['positie'].split(',')
@@ -40,14 +41,11 @@ class Batteries:
 
     def shuffle_order(self) -> None:
         random.shuffle(self.order)
-    
+
     def get_members(self):
         return self.dict_batteries.values()
 
-    def connect(self, house):
-        self.houses.append(house)
-        self.total_input += house.max_output
-    
-    def get_member_coords(self) -> list[Tuple[int, int]]: 
-        member_coords = [battery.position for battery in self.dict_batteries.values()]
+    def get_member_coords(self) -> List[Tuple[int, int]]:
+        member_coords = [battery.position for battery in
+                         self.dict_batteries.values()]
         return member_coords
