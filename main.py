@@ -18,13 +18,20 @@ def main(houses_input: str, batteries_input: str, output_pictures: str, output_f
         # Make wires 
         if wires.generate(houses, batteries):
             cost = calculate_cost(houses, batteries)
+            print(cost)
             if cost < lowest_cost:
                 lowest_cost = cost
                 # Plot grid and save
                 visualize_grid(houses.get_member_coords(),
                    batteries.get_member_coords(),
                    wires.get_paths())
-
+        else:
+            print('No valid outcome')
+    
+    dict_json = { "district" : 1, "own-costs" : lowest_cost}
+    json_object = json.dumps(dict_json, indent = 2)
+    with open("sample.json", "w") as outfile:
+        outfile.write(json_object)
 
 
 if __name__ == "__main__":
