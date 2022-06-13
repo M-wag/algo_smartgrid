@@ -44,15 +44,15 @@ if __name__ == "__main__":
                         help="input file for the houses (csv)")
     parser.add_argument("batteries_input",
                         help="input file for the batteries (csv)")
+    parser.add_argument("n",
+                        help="Number of iterations",)
     parser.add_argument("--output_picture",
                         help="output file for the plotted grid (png)",
                         required=False)
     parser.add_argument("--output_file",
                         help="output file for lowest cost (json)",
                         required=False)
-    parser.add_argument("--n",
-                        help="Number of iterations",
-                        required=False)
+    
 
     # Read arguments from command line
     args = parser.parse_args()
