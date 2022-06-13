@@ -15,14 +15,15 @@ def main(houses_input: str, batteries_input: str, output: str) -> float:
     wires = Wires()
 
     # Generate wires
-    wires.generate(houses, batteries)
+    if wires.generate(houses, batteries) is False:
+        return print("No Valid Grid")
 
     # Plot grid and save
     visualize_grid(houses.get_member_coords(),
                    batteries.get_member_coords(),
                    wires.get_paths())
 
-    return calculate_cost(houses, batteries)
+    return print(calculate_cost(houses, batteries))
 
 
 if __name__ == "__main__":

@@ -32,41 +32,31 @@ class Wires():
                  batteries: Type[Batteries]) -> None:
         """Generate the wires between the houses and the batteries"""
 
-        # Get coordinates for all houses and batteries
-        houses_with_coords = {house: house.position for house in houses.get_members()}                 # noqa: E501
-        batteries_with_coords = {battery: battery.position for battery in batteries.get_members()}     # noqa: E501
-
-        # TODO shuffle dictionary
-        # # Put both dictionaries through the scheduler
-        # coords_houses = schedule(coords_houses)
-        # coords_batteries = schedule(coords_batteries)
+        # Get random order for iterating houses and batteries
+        random_order_houses = houses.shuffle_order()
+        random_order_batteries = batteries.shuffle_order()
 
         wire_id = 0
-        iterations = 0
+        for index_house in random_order_houses:
+            house = houses.dict_houses[index_house]
+            house_coord = house.position
+            has_battery = False
+            for index_battery in random_order_batteries:
+                battery = batteries.dict_batteries[index_battery]
+                battery_coord = battery.position
+                if battery.can_connect(house.max_output):
+                    self.connect(house, battery)
+                    wire_path = find_path(house_coord, battery_coord)
+                    # Make new wire
+                    wire = Wire(wire_id, house, battery, wire_path)
+                    self.add(wire)
+                    wire_id += 1
+                    has_battery = True
+                    break
 
-        # !!! the while-loop seems unnecessary for our random-version !!!
-
-        while True:
-            # Pairing Algorithm
-            # Iterate through houses
-            for house, house_coord in houses_with_coords.items():
-                for battery, battery_coord in batteries_with_coords.items():
-                    if battery.can_connect(house.max_output):
-                        break
-                break
-            # Remove connected house from houses dictionary
-            houses_with_coords.pop(house)
-
-            self.connect(house, battery)
-            wire_path = find_path(house_coord, battery_coord)
-            # Make new wire
-            wire = Wire(wire_id, house, battery, wire_path)
-            self.add(wire)
-            wire_id += 1
-
-            # Break if all houses are connected or iterations > 250
-            if houses.all_houses_connected() or iterations > 250:
-                break
+            if has_battery is False:
+                return False
+        return True
 
     def add(self, wire) -> None:
         self.wires[wire.id] = wire
