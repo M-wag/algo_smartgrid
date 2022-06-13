@@ -3,6 +3,21 @@ from typing import Tuple, List
 
 def random_path_finder(starting_coord: Tuple[int, int],
                        end_coord: Tuple[int, int]) -> List[Tuple[int, int]]:
+    '''
+    Generates a path between start- and end-coordinates,
+    returns a list of coordinates along the path.
+
+            Parameters:
+                    starting_coord (Tuple[int, int]):
+                        starting point coordinates
+                    end_coord (Tuple[int, int]):
+                        end point coordinates
+                        
+
+            Returns:
+                    path (List[Tuple[int, int]]): 
+                        a list of all coordinates along the generated path
+    '''
 
     # Get X and Y for starting- and end-coord
     x_path, y_path = starting_coord
