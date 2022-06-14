@@ -1,9 +1,7 @@
 from houses import Houses, House
 from batteries import Batteries, Battery
 from typing import Type, Tuple, List
-import scheduler
 from path_finders import random_path_finder
-import numpy as np
 
 
 class Wire():
@@ -51,6 +49,8 @@ class Wires():
         generates wires between the houses and the batteries,
         order is randomly generated and function returns whether
         all houses can be connected or not.
+    total_wires_segments(self) -> int:
+        returns the total amount of wire segments
     connect(self, house: Type[House], battery: Type[Battery]) -> None:
         calls the "connect" method for the house and battery
     get_paths(self) -> List[List[Tuple[int, int]]]:
@@ -59,6 +59,7 @@ class Wires():
 
     def __init__(self) -> None:
         self.wires = {}
+        self.wire_segments = set()
 
     def generate(self, houses: Type[Houses],
                  batteries: Type[Batteries]) -> bool:
@@ -77,9 +78,12 @@ class Wires():
                 battery_coord = battery.position
                 if battery.can_connect(house.max_output):
                     self.connect(house, battery)
-                    wire_path = random_path_finder(house_coord, battery_coord)
+                    wire_path = random_path_finder(house_coord,
+                                                   battery_coord,
+                                                   self.wire_segments)
                     # Make new wire
                     wire = Wire(wire_id, house, battery, wire_path)
+                    self.wires[wire_id] = wire
                     wire_id += 1
                     has_battery = True
                     break
@@ -87,6 +91,9 @@ class Wires():
             if has_battery is False:
                 return False
         return True
+
+    def total_wires_segments(self) -> int:
+        return len(self.wire_segments)
 
     def connect(self, house: Type[House], battery: Type[Battery]) -> None:
         house.connect(battery)

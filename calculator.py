@@ -2,16 +2,18 @@
 from typing import Type
 from batteries import Batteries
 from houses import Houses
+from wires import Wires
 
 
-def calculate_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
+def calculate_own_cost(houses: Type[Houses],
+                       batteries: Type[Batteries]) -> float:
     '''
-    Returns the total cost of the SmartGrid
+    Returns the total cost of the SmartGrid when cannot be shared
 
             Parameters:
-                    houses (Houses): 
+                    houses (Houses):
                         A class containing House objects
-                    batteries (Batteries): 
+                    batteries (Batteries):
                         A class containing Batteries objects
 
             Returns:
@@ -27,6 +29,31 @@ def calculate_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
         # manhattan distance
         wire_length = abs(house_x - battery_x) + abs(house_y - battery_y)
         total_wire += wire_length
+
+    total_batteries = 0
+    for battery in batteries.get_members():
+        total_batteries += 1
+
+    total_cost = total_wire * 9 + total_batteries * 5000
+    return total_cost
+
+
+def calculate_shared_cost(wires: Type[Wires],
+                          batteries: Type[Batteries]) -> float:
+    '''
+    Returns the total cost of the SmartGrid when wires can be shared
+
+            Parameters:
+                    wires (Wires):
+                        A class containing Wire objects
+                    batteries (Batteries):
+                        A class containing Batteries objects
+
+            Returns:
+                    Total cost (float):
+                         The total cost of the SmartGrid
+    '''
+    total_wire = wires.total_wires_segments()
 
     total_batteries = 0
     for battery in batteries.get_members():

@@ -6,7 +6,8 @@ from matplotlib.ticker import (MultipleLocator)
 
 def visualize_grid(house_coords: List[Tuple[int, int]],
                    battery_coords: List[Tuple[int, int]],
-                   wire_paths: List[List[Tuple[int, int]]]) -> None:
+                   wire_paths: List[List[Tuple[int, int]]], 
+                   output: str) -> None:
     '''
     plots a figure with all houses, batteries and wire-paths
 
@@ -15,8 +16,10 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
                         A list of house coordinates
                     battery_coords (List[Tuple[int, int]]): 
                         A list of battery coordinates
-                    wire_paths (List[List[Tuple[int, int]]])
+                    wire_paths (List[List[Tuple[int, int]]]):
                         A list of all wire-paths
+                    output (str):
+                        The output-file name
     '''
 
     fig, ax = plt.subplots()
