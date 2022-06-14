@@ -6,6 +6,29 @@ from batteries import Battery
 
 
 class House():
+    """
+    A class to represent a house.
+
+    ...
+
+    Attributes
+    ----------
+    position : Tuple[int, int]
+        x and y coordinates of the house
+    max_output : float
+        maximum energy output of the house
+    battery : Type[Battery]
+        battery object connected to the house
+    wire : Type[Wire]
+        wire object connected to the house and its battery
+
+    Methods
+    -------
+    assign_wire(self, wire) -> None:
+        assigns a Wire object to the house
+    connect(self, house: Type[House]) -> None:
+        assigns a Battery object to the house
+    """
 
     def __init__(self, position: Tuple[int, int], max_output: float, container) -> None:
         self.position = position
@@ -24,6 +47,33 @@ class House():
 
 
 class Houses():
+    """
+    A class to represent a collection of houses.
+
+    ...
+
+    Attributes
+    ----------
+    dict_houses : Dict[int, Type[House]]
+        a dictionary with all House objects contained
+    order : List[int]
+        the order in which to iterate over the dictionary
+    connected_houses : List[House]    
+        a list of all House objects connected to a battery
+
+    Methods
+    -------
+    load(self, Houses_csv: str) -> Dict[int, Type[House]]:
+        loads the csv-file data into House classes and adds them to a dict
+    shuffle_order(self) -> List[int]:
+        shuffles the order of items in the order list
+    get_members(self) -> Tuple[int, Type[House]]:
+        returns all House objects together with their keys
+    get_member_coords(self) -> List[Tuple[int, int]]:
+        returns a list of all House positions
+    all_houses_connected(self) -> bool:
+        returns whether all houses are connected to a battery
+    """
 
     def __init__(self, houses_csv: str) -> None:
         self.dict_houses = {}

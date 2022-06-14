@@ -15,8 +15,6 @@ class Battery:
         x and y coordinates of the battery
     capacity : float
         total capacity of the battery
-    age : int
-        age of the person
     total_input : float
         total accumulated output from houses
     houses : List[Type[House]]
@@ -48,6 +46,29 @@ class Battery:
 
 
 class Batteries:
+    """
+    A class to represent a collection of batteries.
+
+    ...
+
+    Attributes
+    ----------
+    dict_batteries : Dict[int, Type[Battery]]
+        a dictionary with all Battery objects contained
+    order : List[int]
+        the order in which to iterate over the dictionary
+
+    Methods
+    -------
+    load(self, batteries_csv: str) -> Dict[int, Type[Battery]]:
+        loads the csv-file data into Battery classes and adds them to a dict
+    shuffle_order(self) -> List[int]:
+        shuffles the order of items in the order list
+    get_members(self) -> Tuple[int, Type[Battery]]:
+        returns all Battery objects together with their keys
+    get_member_coords(self) -> List[Tuple[int, int]]:
+        returns a list of all Battery positions
+    """
 
     def __init__(self, batteries_csv: str) -> None:
         self.dict_batteries = {}
@@ -65,11 +86,11 @@ class Batteries:
 
         return self.dict_batteries
 
-    def shuffle_order(self) -> None:
+    def shuffle_order(self) -> List[int]:
         random.shuffle(self.order)
         return self.order
 
-    def get_members(self):
+    def get_members(self) -> Tuple[int, Type[Battery]]:
         return self.dict_batteries.values()
 
     def get_member_coords(self) -> List[Tuple[int, int]]:

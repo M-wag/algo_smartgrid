@@ -7,6 +7,22 @@ import numpy as np
 
 
 class Wire():
+    """
+    A class to represent a wire.
+
+    ...
+
+    Attributes
+    ----------
+    id : int
+        the wires id
+    house : Type[House]
+        the House object connected to the wire
+    battery : Type[Battery]
+        the Battery object connected to the wire
+    path : List[Tuple[int, int]]
+        a list of coordinates along which the wire is laid
+    """
 
     def __init__(self, id: int, house: Type[House], battery: Type[Battery],
                  path: List[Tuple[int, int]], container) -> None:
@@ -18,13 +34,34 @@ class Wire():
 
 
 class Wires():
+    """
+    A class to represent a collection of wires.
+
+    ...
+
+    Attributes
+    ----------
+    wires : Dict[int, Type[Wire]]
+        a dictionary with all Wire objects contained
+
+    Methods
+    -------
+    generate(self, houses: Type[Houses],
+             batteries: Type[Batteries]) -> bool:
+        generates wires between the houses and the batteries,
+        order is randomly generated and function returns whether
+        all houses can be connected or not.
+    connect(self, house: Type[House], battery: Type[Battery]) -> None:
+        calls the "connect" method for the house and battery
+    get_paths(self) -> List[List[Tuple[int, int]]]:
+        returns a list of the paths of all wires contained
+    """
 
     def __init__(self) -> None:
         self.wires = {}
 
     def generate(self, houses: Type[Houses],
-                 batteries: Type[Batteries]) -> None:
-        """Generate the wires between the houses and the batteries"""
+                 batteries: Type[Batteries]) -> bool:
 
         # Get random order for iterating houses and batteries
         random_order_houses = houses.shuffle_order()
@@ -51,7 +88,7 @@ class Wires():
                 return False
         return True
 
-    def connect(self, house, battery):
+    def connect(self, house: Type[House], battery: Type[Battery]) -> None:
         house.connect(battery)
         battery.connect(house)
 
