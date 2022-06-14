@@ -3,35 +3,37 @@ import json
 from houses import Houses
 from batteries import Batteries
 from wires import Wires
-from calculator import calculate_own_cost
+from calculator import calculate_shared_cost
 from visualize import visualize_grid
 
 
-def main(wijk_num: str, n: int, save_changes) -> None:
+def main(wijk_num: str, n: int, save_changes: bool) -> None:
     lowest_cost = 1000000
     # Generate wires
     for i in range(n):
         # init
-        houses = Houses(f'district-{wijk_num}_houses.csv')
-        batteries = Batteries(f'district-{wijk_num}_batteries.csv')
+        houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
+        batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
         wires = Wires()
-        # Make wires 
+
+        # Make wires
         if wires.generate(houses, batteries):
-            cost = calculate_own_cost(houses, batteries)
-            print(i, cost)
+            cost = calculate_shared_cost(wires, batteries)
+            print(f"iteration: {i}  cost: {cost}")
             if cost < lowest_cost:
                 lowest_cost = cost
                 # Plot grid and save
-                if save_changes == 'true':
+                if save_changes is True:
                     visualize_grid(houses.get_member_coords(),
                     batteries.get_member_coords(),
-                    wires.get_paths(), f'smartgrid_wijk_{wijk_num}.png')
+                    wires.get_paths(), f'output/smartgrid_wijk_{wijk_num}.png')
         else:
             print(i,'No valid outcome')
-    if save_changes == 'true':
+
+    if save_changes is True:
         dict_json = { "district" : wijk_num, "own-costs" : lowest_cost}
         json_object = json.dumps(dict_json, indent = 2)
-        with open(f'smartgrid_wijk_{wijk_num}.json', "w") as outfile:
+        with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
 
 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     parser.add_argument("n",
                         help="number of iterations", type=int)
     parser.add_argument("save_changes",
-                        help="number of iterations")
+                        help="number of iterations", type=bool)
     
 
     # Read arguments from command line

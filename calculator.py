@@ -1,20 +1,19 @@
 # takes in the amount of wire used and batteries used, and calculates the cost
-from re import T
 from typing import Type
 from batteries import Batteries
 from houses import Houses
 from wires import Wires
-import numpy as np
 
 
-def calculate_own_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
+def calculate_own_cost(houses: Type[Houses],
+                       batteries: Type[Batteries]) -> float:
     '''
     Returns the total cost of the SmartGrid when cannot be shared
 
             Parameters:
-                    houses (Houses): 
+                    houses (Houses):
                         A class containing House objects
-                    batteries (Batteries): 
+                    batteries (Batteries):
                         A class containing Batteries objects
 
             Returns:
@@ -39,29 +38,22 @@ def calculate_own_cost(houses: Type[Houses], batteries: Type[Batteries]) -> floa
     return total_cost
 
 
-def calculate_shared_cost(wires: Type[Wires], batteries: Type[Batteries]) -> float:
+def calculate_shared_cost(wires: Type[Wires],
+                          batteries: Type[Batteries]) -> float:
     '''
-    Returns the total cost of the SmartGrid when wires can be shared 
+    Returns the total cost of the SmartGrid when wires can be shared
 
             Parameters:
-                    houses (Houses): 
-                        A class containing House objects
-                    batteries (Batteries): 
+                    wires (Wires):
+                        A class containing Wire objects
+                    batteries (Batteries):
                         A class containing Batteries objects
 
             Returns:
                     Total cost (float):
                          The total cost of the SmartGrid
     '''
-    total_wire = 0
-    grid = np.zeros(51,51)
-    for path in wires.get_paths():
-        wire_x, wire_y = path
-        grid[wire_x][wire_y] = 1
-
-    for cell in grid:
-        if cell == 1:
-            total_wire += 1
+    total_wire = wires.total_wires_segments()
 
     total_batteries = 0
     for battery in batteries.get_members():
