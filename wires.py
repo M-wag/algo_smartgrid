@@ -95,3 +95,4 @@ class Wires():
     def get_paths(self) -> List[List[Tuple[int, int]]]:
         paths = [wire.path for wire in self.wires.values()]
         return paths
+    
