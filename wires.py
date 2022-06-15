@@ -23,11 +23,12 @@ class Wire():
     """
 
     def __init__(self, id: int, house: Type[House], battery: Type[Battery],
-                 path: List[Tuple[int, int]]) -> None:
+                 path: List[Tuple[int, int]], container) -> None:
         self.id = id
         self.house = house
         self.battery = battery
         self.path = path
+        self.container = container
 
 
 class Wires():
