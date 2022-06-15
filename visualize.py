@@ -4,6 +4,22 @@ from typing import List, Tuple
 from matplotlib.ticker import (MultipleLocator)
 
 
+def round_to_nearest(input: int) -> int:
+    multiple = 100
+    return multiple * round(input / multiple)
+
+def visualize_bar(cost_record: List[int]) -> None:
+
+    rounded_cost_record = [round_to_nearest(i) for i in cost_record]
+
+    fig, ax = plt.subplots()
+    values, counts = np.unique(rounded_cost_record, return_counts=True)
+
+    plt.bar(x=values, height=counts, width=90)
+
+    plt.savefig("test.png")
+
+
 def visualize_grid(house_coords: List[Tuple[int, int]],
                    battery_coords: List[Tuple[int, int]],
                    wire_paths: List[List[Tuple[int, int]]], 

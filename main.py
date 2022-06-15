@@ -4,11 +4,12 @@ from houses import Houses
 from batteries import Batteries
 from wires import Wires
 from calculator import calculate_shared_cost
-from visualize import visualize_grid
+from visualize import visualize_grid, visualize_bar
 
 
 def main(wijk_num: str, n: int, save_changes: bool) -> None:
     lowest_cost = 1000000
+    cost_record = []
     # Generate wires
     for i in range(n):
         # init
@@ -19,6 +20,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
         # Make wires
         if wires.generate(houses, batteries):
             cost = calculate_shared_cost(wires, batteries)
+            cost_record.append(cost)
             print(f"iteration: {i}  cost: {cost}")
             if cost < lowest_cost:
                 lowest_cost = cost
@@ -35,6 +37,8 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
         json_object = json.dumps(dict_json, indent = 2)
         with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
+    
+    visualize_bar(cost_record)
 
 
 if __name__ == "__main__":
@@ -44,11 +48,11 @@ if __name__ == "__main__":
 
     # Adding arguments
     parser.add_argument("wijk",
-                        help="wijk nummer)")
+                        help="wijk number)")
     parser.add_argument("n",
                         help="number of iterations", type=int)
     parser.add_argument("save_changes",
-                        help="number of iterations", type=bool)
+                        help="whether to save output to files", type=bool)
     
 
     # Read arguments from command line
