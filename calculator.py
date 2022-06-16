@@ -55,8 +55,8 @@ def calculate_shared_cost(wires: Type[Wires],
     '''
 
     total_wire = 0
-    # for wire_branch in wires.shared_wires:
-    #     total_wire += len(wire_branch.path) - 1
+    for wire_branch in wires.shared_wires.values():
+        total_wire += len(wire_branch.path) - 1
 
     total_batteries = 0
     for battery in batteries.get_members():

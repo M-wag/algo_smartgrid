@@ -8,7 +8,7 @@ def round_to_nearest(input: int) -> int:
     multiple = 100
     return multiple * round(input / multiple)
 
-def visualize_bar(cost_record: List[int]) -> None:
+def visualize_bar(cost_record: List[int], output: str) -> None:
 
     rounded_cost_record = [round_to_nearest(i) for i in cost_record]
 
@@ -17,7 +17,7 @@ def visualize_bar(cost_record: List[int]) -> None:
 
     plt.bar(x=values, height=counts, width=90)
 
-    plt.savefig("test.png")
+    plt.savefig(output)
 
 
 def visualize_grid(house_coords: List[Tuple[int, int]],

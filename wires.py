@@ -1,3 +1,4 @@
+from ctypes import Union
 from houses import Houses, House
 from batteries import Batteries, Battery
 from typing import Type, Tuple, List
@@ -29,6 +30,12 @@ class Wire():
         self.battery = battery
         self.path = path
 
+class Shared_wire:
+    def __init__(self, house, battery, path):
+        self.house_list = []
+        self.house_list.append(house)
+        self.battery = battery
+        self.path = set(path)
 
 class Wires():
     """
@@ -58,6 +65,7 @@ class Wires():
 
     def __init__(self) -> None:
         self.wires = {}
+        self.shared_wires = {}
         self.wire_segments = set()
 
     def generate(self, houses: Type[Houses],
@@ -101,3 +109,25 @@ class Wires():
     def get_paths(self) -> List[List[Tuple[int, int]]]:
         paths = [wire.path for wire in self.wires.values()]
         return paths
+
+    def share_wires(self):
+        id = 0
+        for index, wire in self.wires.items():
+            count = 0
+            if index == 0:
+                shared = Shared_wire(wire.house, wire.battery, wire.path)
+                self.shared_wires[id] = shared
+                id += 1
+                count += 1
+            else:
+                path = set(wire.path)
+                for index_share, shared_wire in self.shared_wires.items():
+                    if wire.battery == shared_wire.battery and len(shared_wire.path & path) >= 2:
+                        shared_wire.path = shared_wire.path.union(path)
+                        shared_wire.house_list.append(wire.house)
+                        count = 1
+            if count == 0:
+                shared = Shared_wire(wire.house, wire.battery, wire.path)
+                self.shared_wires[id] = shared
+                id += 1
+

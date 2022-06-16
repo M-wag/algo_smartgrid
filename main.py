@@ -3,7 +3,7 @@ import json
 from houses import Houses
 from batteries import Batteries
 from wires import Wires
-from calculator import calculate_shared_cost
+from calculator import calculate_shared_cost, calculate_own_cost
 from visualize import visualize_grid, visualize_bar
 
 
@@ -19,6 +19,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
 
         # Make wires
         if wires.generate(houses, batteries):
+            wires.share_wires()
             cost = calculate_shared_cost(wires, batteries)
             cost_record.append(cost)
             print(f"iteration: {i}  cost: {cost}")
@@ -38,7 +39,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
         with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
     
-    visualize_bar(cost_record)
+    visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar.png')
 
 
 if __name__ == "__main__":
