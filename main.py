@@ -29,17 +29,17 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
                 if save_changes is True:
                     visualize_grid(houses.get_member_coords(),
                     batteries.get_member_coords(),
-                    wires.get_paths(), f'output/XXXsmartgrid_wijk_{wijk_num}.png')
+                    wires.get_paths(), f'output/smartgrid_wijk_{wijk_num}.png')
         else:
             print(f"iteration: {i}, No valid outcome")
 
-    # if save_changes is True:
-    #     dict_json = { "district" : wijk_num, "shared-costs" : lowest_cost}
-    #     json_object = json.dumps(dict_json, indent = 2)
-    #     with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
-    #         outfile.write(json_object)
+    if save_changes is True:
+        dict_json = { "district" : wijk_num, "shared-costs" : lowest_cost}
+        json_object = json.dumps(dict_json, indent = 2)
+        with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
+            outfile.write(json_object)
     
-    visualize_bar(cost_record, f'output/XXXwijk_{wijk_num}_bar.png')
+    visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar.png')
     
 
 
