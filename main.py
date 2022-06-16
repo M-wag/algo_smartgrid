@@ -34,7 +34,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
             print(i,'No valid outcome')
 
     if save_changes is True:
-        dict_json = { "district" : wijk_num, "own-costs" : lowest_cost}
+        dict_json = { "district" : wijk_num, "shared-costs" : lowest_cost}
         json_object = json.dumps(dict_json, indent = 2)
         with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
