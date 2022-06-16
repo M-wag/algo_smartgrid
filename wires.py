@@ -30,6 +30,11 @@ class Wire():
         self.path = path
         self.container = container
 
+class Shared_wire:
+    def __init__(self):
+        self.house_list = house
+        self.battery = battery
+        self.path = set()
 
 class Wires():
     """
@@ -59,6 +64,7 @@ class Wires():
 
     def __init__(self) -> None:
         self.wires = {}
+        self.shared_wires = {}
         self.wire_segments = set()
 
     def generate(self, houses: Type[Houses],
@@ -102,3 +108,8 @@ class Wires():
     def get_paths(self) -> List[List[Tuple[int, int]]]:
         paths = [wire.path for wire in self.wires.values()]
         return paths
+
+    def share_wires(self):
+        for index, wire in self.wires:
+            if index == 0:
+
