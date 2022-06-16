@@ -40,6 +40,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
             outfile.write(json_object)
     
     visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar.png')
+    
 
 
 if __name__ == "__main__":
