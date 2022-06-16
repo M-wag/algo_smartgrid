@@ -19,6 +19,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
 
         # Make wires
         if wires.generate(houses, batteries):
+            wires.share_wires()
             cost = calculate_shared_cost(wires, batteries)
             cost_record.append(cost)
             print(f"iteration: {i}  cost: {cost}")

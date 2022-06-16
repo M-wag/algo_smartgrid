@@ -65,5 +65,4 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
     # ax.set_yticks(np.arange(0, 50, 10))
 
     plt.grid(True, which='major')
-    plt.show()
     plt.savefig("output.png")
