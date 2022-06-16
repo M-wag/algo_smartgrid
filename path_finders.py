@@ -54,11 +54,20 @@ def random_path_finder(starting_coord: Tuple[int, int],
     path = [(x_path, y_path)]
     
     # Draw the X line
-    for move in moves:
-        if move[0] == "x_path":
-            x_path += move[1]
-        else:
-            y_path += move[1]
+    while x_path != x_end:
+        x_path += next_move_x
         path.append((x_path, y_path))
+    
+    # Draw the Y line
+    while y_path != y_end:
+        y_path += next_move_y
+        path.append((x_path, y_path))
+
+    # for move in moves:
+    #     if move[0] == "x_path":
+    #         x_path += move[1]
+    #     else:
+    #         y_path += move[1]
+        
 
     return path
