@@ -31,7 +31,7 @@ def main(wijk_num: str, n: int, save_changes: bool) -> None:
                     batteries.get_member_coords(),
                     wires.get_paths(), f'output/smartgrid_wijk_{wijk_num}.png')
         else:
-            print(i,'No valid outcome')
+            print(f"iteration: {i}, No valid outcome")
 
     if save_changes is True:
         dict_json = { "district" : wijk_num, "shared-costs" : lowest_cost}
