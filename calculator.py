@@ -53,7 +53,10 @@ def calculate_shared_cost(wires: Type[Wires],
                     Total cost (float):
                          The total cost of the SmartGrid
     '''
-    total_wire = wires.total_wires_segments()
+
+    total_wire = 0
+    # for wire_branch in wires.shared_wires:
+    #     total_wire += len(wire_branch.path) - 1
 
     total_batteries = 0
     for battery in batteries.get_members():
