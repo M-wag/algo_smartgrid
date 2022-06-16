@@ -1,4 +1,5 @@
 from typing import Tuple, List, Set
+import random
 
 
 def random_path_finder(starting_coord: Tuple[int, int],
@@ -42,19 +43,22 @@ def random_path_finder(starting_coord: Tuple[int, int],
     else:
         next_move_y = int(y_dif / abs(y_dif))
 
-    path = [(x_path, y_path)]
-    # Draw the X line
-    while x_path != x_end:
-        wire_segment_x = x_path + (x_path + next_move_x) / 2
-        wire_segments.add(tuple((wire_segment_x, y_path, "hor")))
-        x_path += next_move_x
-        path.append((x_path, y_path))
+    moves = []
+    for x in range(abs(x_dif)):
+        moves.append(("x_path", next_move_x))
+    for y in range(abs(y_dif)):
+        moves.append(("y_path", next_move_y))
+    
+    random.shuffle(moves)
 
-    # Draw the Y line
-    while y_path != y_end:
-        wire_segment_y = y_path + (y_path + next_move_y) / 2
-        wire_segments.add(tuple((x_path, wire_segment_y, "ver")))
-        y_path += next_move_y
+    path = [(x_path, y_path)]
+    
+    # Draw the X line
+    for move in moves:
+        if move[0] == "x_path":
+            x_path += move[1]
+        else:
+            y_path += move[1]
         path.append((x_path, y_path))
 
     return path

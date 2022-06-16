@@ -1,4 +1,3 @@
-from ctypes import Union
 from houses import Houses, House
 from batteries import Batteries, Battery
 from typing import Type, Tuple, List
