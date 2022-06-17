@@ -118,6 +118,11 @@ class Wires():
         second_battery = second_house.battery
 
         #   Connect the first house to the second battery and the second house to the first battery
+        if first_battery.can_connect(second_house) == False:
+            return False
+        if second_battery.can_connect(first_house) == False:
+            return False
+
         h1_b2_wire = self.generate_wire(first_house.id, first_house, second_battery)
         h2_b1_wire = self.generate_wire(second_house.id, second_house, first_battery)
 
