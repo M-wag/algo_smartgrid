@@ -134,24 +134,27 @@ class Wires():
         return swapped_grid
 
 
-    def share_wires(self):
+    def share_wires(self, dict_wire):
         id = 0
-        for index, wire in self.wires.items():
+        shared_wires = {}
+        for index, wire in dict_wire.items():
             count = 0
             if index == 0:
                 shared = Shared_wire(wire.house, wire.battery, wire.path)
-                self.shared_wires[id] = shared
+                shared_wires[id] = shared
                 id += 1
                 count += 1
             else:
                 path = set(wire.path)
-                for index_share, shared_wire in self.shared_wires.items():
+                for index_share, shared_wire in shared_wires.items():
                     if wire.battery == shared_wire.battery and len(shared_wire.path & path) >= 2:
                         shared_wire.path = shared_wire.path.union(path)
                         shared_wire.house_list.append(wire.house)
                         count = 1
             if count == 0:
                 shared = Shared_wire(wire.house, wire.battery, wire.path)
-                self.shared_wires[id] = shared
+                shared_wires[id] = shared
                 id += 1
+                
+        return shared_wires
 

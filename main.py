@@ -6,15 +6,14 @@ from wires import Wires
 from calculator import calculate_shared_cost, calculate_own_cost
 from visualize import visualize_grid, visualize_bar
 
-def hillclimber(houses, wires, batteries):
+def hillclimber(houses, wires):
     house_1 = houses.random_pick()
     house_2 = houses.random_pick()
     while new_wires == False:
         new_wires = wires.swap(house_1, house_2)
-    new_cost = calculate_shared_cost(new_wires, batteries)
-    return new_cost, new_wires
+    return new_wires
 
-def main(wijk_num: str, iterations: int, save_changes: bool, n) -> None:
+def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
     cost_record = []
     count = 0
     # init
@@ -24,32 +23,36 @@ def main(wijk_num: str, iterations: int, save_changes: bool, n) -> None:
     grid = False
     while grid == False:
         grid = wires.generate(houses, batteries)
-    wires.share_wires()
-    cost = calculate_shared_cost(wires, batteries)
+    wires.shared_wires = wires.share_wires(wires.wires)
+    cost = calculate_shared_cost(wires.shared_wires, batteries)
     cost_record.append(cost)
     for i in range(iterations):
-        new_cost, new_wires = hillclimber(houses, wires, batteries)
+        print(i, cost)
+        new_wires = hillclimber(houses, wires)
+        new_shared_wires = wires.share_wires(new_wires)
+        new_cost = calculate_shared_cost(new_shared_wires, batteries)
         if new_cost <= cost:
             cost = new_cost
             wires.wires = new_wires
+            wires.shared_wires = new_shared_wires
             count = 0
         else:
             count += 1
-        if count == n:
+        if count >= restart:
             grid = False
             while grid == False:
                 grid = wires.generate(houses, batteries)
-                # Plot grid and save
+    # Plot grid and save
     if save_changes is True:
         visualize_grid(houses.get_member_coords(),
         batteries.get_member_coords(),
         wires.get_paths(), f'output/smartgrid_wijk_{wijk_num}.png')
 
-        dict_json = { "district" : wijk_num, "shared-costs" : cost}
+        dict_json = {"district" : wijk_num, "shared-costs" : cost}
         json_object = json.dumps(dict_json, indent = 2)
         with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
-            
+
         visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar.png')
     
 
@@ -62,7 +65,9 @@ if __name__ == "__main__":
     # Adding arguments
     parser.add_argument("wijk",
                         help="wijk number)")
-    parser.add_argument("n",
+    parser.add_argument("iterations",
+                        help="number of iterations", type=int)
+    parser.add_argument("restart",
                         help="number of iterations", type=int)
     parser.add_argument("save_changes",
                         help="whether to save output to files", type=bool)
@@ -72,4 +77,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Run our line function with provided arguments
-    main(args.wijk, args.n, args.save_changes)
+    main(args.wijk, args.iterations, args.restart, args.save_changes,)
