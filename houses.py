@@ -110,3 +110,6 @@ class Houses():
         if len(self.connected_houses) == len(self.dict_houses):
             return True
         return False
+
+    def random_pick(self):
+        return random.choice(list(self.dict_houses.values()))

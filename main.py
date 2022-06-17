@@ -6,6 +6,8 @@ from wires import Wires
 from calculator import calculate_shared_cost, calculate_own_cost
 from visualize import visualize_grid, visualize_bar
 
+def hillclimber(houses, batteries, restart):
+    
 
 def main(wijk_num: str, n: int, save_changes: bool) -> None:
     lowest_cost = 1000000
