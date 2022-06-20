@@ -29,7 +29,8 @@ class House():
         assigns a Battery object to the house
     """
 
-    def __init__(self, position: Tuple[int, int], max_output: float, container) -> None:
+    def __init__(self, id: int, position: Tuple[int, int], max_output: float, container) -> None:
+        self.id = id
         self.position = position
         self.max_output = max_output
         self.battery = None
@@ -86,7 +87,7 @@ class Houses():
         for id, row in df_houses.iterrows():
             position = (int(row['x']), int(row['y']))
             max_output = float(row['maxoutput'])
-            self.dict_houses[id] = House(position, max_output, self)
+            self.dict_houses[id] = House(id, position, max_output, self)
             self.order = list(self.dict_houses.keys())
 
         return self.dict_houses
@@ -111,7 +112,7 @@ class Houses():
         return False
 
     def random_pick(self):
-        return random.choice(list(self.dict_houses.values()))
+        return random.choices(list(self.dict_houses.values()), k=2)
 
     def disconnect_all(self):
         for house in self.dict_houses.values():

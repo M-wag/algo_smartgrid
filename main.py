@@ -1,17 +1,17 @@
 import argparse
+from copy import deepcopy
 import json
 from houses import Houses
 from batteries import Batteries
 from wires import Wires
 from calculator import calculate_shared_cost, calculate_own_cost
-from visualize import visualize_grid, visualize_bar
+from visualize import visualize_grid, visualize_bar, visualize_hill
 
 def hillclimber(houses, wires):
     new_wires = False
     while new_wires == False:
-        house_1 = houses.random_pick()
-        house_2 = houses.random_pick()
-        new_wires = wires.swap(house_1, house_2)
+        house_list = houses.random_pick()
+        new_wires = wires.swap(house_list[0], house_list[1])
     return new_wires
 
 def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
@@ -21,29 +21,30 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
     houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
     batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
     wires = Wires()
-    grid = False
-    while grid == False:
-        grid = wires.generate(houses, batteries)
-    wires.shared_wires = wires.share_wires(wires.wires)
-    cost = calculate_shared_cost(wires.shared_wires, batteries)
-    cost_record.append(cost)
+    lowest_cost = 999999
     for i in range(iterations):
-        print(i, cost)
-        new_wires = hillclimber(houses, wires)
-        print('yeet')
-        new_shared_wires = wires.share_wires(new_wires)
-        new_cost = calculate_shared_cost(new_shared_wires, batteries)
-        if new_cost <= cost:
-            cost = new_cost
-            wires.wires = new_wires
-            wires.shared_wires = new_shared_wires
-            count = 0
-        else:
-            count += 1
-        if count >= restart:
-            grid = False
-            while grid == False:
-                grid = wires.generate(houses, batteries)
+        grid = False
+        while grid == False:
+            grid = wires.generate(houses, batteries)
+        wires.shared_wires = wires.share_wires(wires.wires)
+        cost = calculate_shared_cost(wires.shared_wires, batteries)
+        cost_record.append(cost)
+        count = 0
+        while count < restart:
+            new_wires = hillclimber(houses, wires)
+            new_shared_wires = wires.share_wires(new_wires)
+            new_cost = calculate_shared_cost(new_shared_wires, batteries)
+            if new_cost <= cost:
+                cost = new_cost
+                wires.wires = new_wires
+                wires.shared_wires = new_shared_wires
+                count = 0
+            else:
+                count += 1
+            cost_record.append(cost)
+        if cost < lowest_cost:
+            lowest_cost = cost
+    print(lowest_cost)
     # Plot grid and save
     if save_changes is True:
         visualize_grid(houses.get_member_coords(),
@@ -55,7 +56,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
         with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
 
-        visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar.png')
+        visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill.png')
     
 
 

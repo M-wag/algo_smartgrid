@@ -66,7 +66,6 @@ class Wires():
     def __init__(self) -> None:
         self.wires = {}
         self.shared_wires = {}
-        self.wire_segments = set()
 
     def generate(self, houses: Type[Houses],
                  batteries: Type[Batteries]) -> bool:
@@ -75,7 +74,6 @@ class Wires():
         random_order_houses = houses.shuffle_order()
         random_order_batteries = batteries.shuffle_order()
 
-        wire_id = 0
         self.wires = {}
         self.shared_wires = {}
         self.wire_segments = set()
@@ -87,17 +85,15 @@ class Wires():
             for battery_index in random_order_batteries:
                 battery = batteries.dict_batteries[battery_index]
                 if battery.can_connect(house.max_output):
+                    wire_id = tuple((house.id, battery.id))
                     wire = self.generate_wire(wire_id, house, battery)
                     self.connect(house, battery)
                     self.wires[wire_id] = wire
-                    wire_id += 1
                     has_battery = True
                     break
             if has_battery is False:
-                print("False")
                 batteries.disconnect_all()
                 return False
-        print("True")
         return True
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
@@ -108,9 +104,6 @@ class Wires():
         wire = Wire(wire_id, house, battery, wire_path)
         return wire
 
-    def total_wires_segments(self) -> int:
-        return len(self.wire_segments)
-
     def connect(self, house: Type[House], battery: Type[Battery]) -> None:
         house.connect(battery)
         battery.connect(house)
@@ -119,23 +112,27 @@ class Wires():
         paths = [wire.path for wire in self.wires.values()]
         return paths
 
-    def swap(self, first_house, second_house) -> Dict[int, Type[Wire]]:
-        first_battery = first_house.battery
-        second_battery = second_house.battery
+    def swap(self, house_1, house_2) -> Dict[int, Type[Wire]]:
+        battery_1 = house_1.battery
+        battery_2 = house_2.battery
 
-        #   Connect the first house to the second battery and the second house to the first battery
-        if first_battery.can_connect(second_house.max_output) == False:
+        if battery_1.can_connect(house_1.max_output - house_2.max_output) == False:
             return False
-        if second_battery.can_connect(first_house.max_output) == False:
+        
+        if battery_2.can_connect(house_2.max_output - house_1.max_output) == False:
             return False
 
-        h1_b2_wire = self.generate_wire(first_house.id, first_house, second_battery)
-        h2_b1_wire = self.generate_wire(second_house.id, second_house, first_battery)
+        battery_1.total_input -= house_1.max_output
+        battery_2.total_input -= house_2.max_output
+        
+
+        h1_b2_wire = self.generate_wire(tuple((house_1.id, battery_1.id)), house_1, battery_2)
+        h2_b1_wire = self.generate_wire(tuple((house_2.id, battery_1.id)), house_2, battery_1)
 
         #   Copy wires and replace the wires of passed houses
         swapped_grid = deepcopy(self.wires)
         swapped_grid[h1_b2_wire.id] = h1_b2_wire
-        swapped_grid[h2_b1_wire ] = h2_b1_wire 
+        swapped_grid[h2_b1_wire.id] = h2_b1_wire 
 
         return swapped_grid
 

@@ -28,7 +28,8 @@ class Battery:
         adds the house to the "houses" list and calculates the total_input
     """
 
-    def __init__(self, position: Tuple[int, int], capacity: float) -> None:
+    def __init__(self, id: int, position: Tuple[int, int], capacity: float) -> None:
+        self.id = id
         self.position = position
         self.capacity = capacity
         self.total_input = 0
@@ -80,7 +81,7 @@ class Batteries:
         for id, row in df_batteries.iterrows():
             x, y = row['positie'].split(',')
             capacity = int(row['capaciteit'])
-            self.dict_batteries[id] = Battery((int(x), int(y)), capacity)
+            self.dict_batteries[id] = Battery(id, (int(x), int(y)), capacity)
             self.order = list(self.dict_batteries.keys())
 
         return self.dict_batteries
