@@ -28,12 +28,11 @@ class Battery:
         adds the house to the "houses" list and calculates the total_input
     """
 
-    def __init__(self, position: Tuple[int, int], capacity: float, container) -> None:
+    def __init__(self, position: Tuple[int, int], capacity: float) -> None:
         self.position = position
         self.capacity = capacity
         self.total_input = 0
         self.houses = []
-        self.container = container
 
     def can_connect(self, house_output: float) -> bool:
         if self.total_input + house_output > self.capacity:
@@ -81,7 +80,7 @@ class Batteries:
         for id, row in df_batteries.iterrows():
             x, y = row['positie'].split(',')
             capacity = int(row['capaciteit'])
-            self.dict_batteries[id] = Battery((int(x), int(y)), capacity, self)
+            self.dict_batteries[id] = Battery((int(x), int(y)), capacity)
             self.order = list(self.dict_batteries.keys())
 
         return self.dict_batteries
@@ -97,3 +96,8 @@ class Batteries:
         member_coords = [battery.position for battery in
                          self.dict_batteries.values()]
         return member_coords
+    
+    def disconnect_all(self):
+        for battery in self.dict_batteries.values():
+            battery.houses = []
+            battery.total_input = 0

@@ -42,7 +42,6 @@ class House():
 
     def connect(self, battery: Type[Battery]) -> None:
         self.battery = battery
-        self.container.add_connected_house(self)
 
 
 class Houses():
@@ -113,3 +112,8 @@ class Houses():
 
     def random_pick(self):
         return random.choice(list(self.dict_houses.values()))
+
+    def disconnect_all(self):
+        for house in self.dict_houses.values():
+            house.battery = None
+            
