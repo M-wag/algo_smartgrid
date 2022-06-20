@@ -18,11 +18,14 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
     cost_record = []
     count = 0
     # init
-    houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
-    batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
-    wires = Wires()
+    og_houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
+    og_batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
+    og_wires = Wires()
     lowest_cost = 999999
     for i in range(iterations):
+        houses = deepcopy(og_houses)
+        batteries = deepcopy(og_batteries)
+        wires = deepcopy(og_wires)
         grid = False
         while grid == False:
             grid = wires.generate(houses, batteries)
@@ -31,6 +34,11 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
         cost_record.append(cost)
         count = 0
         while count < restart:
+<<<<<<< HEAD
+=======
+
+            print(f"iteration {i}, cost {cost}")
+>>>>>>> 8c910f82237620a9ad0e8776a340cc2df9a40bae
             new_wires = hillclimber(houses, wires)
             new_shared_wires = wires.share_wires(new_wires)
             new_cost = calculate_shared_cost(new_shared_wires, batteries)
