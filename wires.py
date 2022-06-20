@@ -76,7 +76,6 @@ class Wires():
 
         self.wires = {}
         self.shared_wires = {}
-        self.wire_segments = set()
         
         # Iterate through each house them battery
         for house_index in random_order_houses:
