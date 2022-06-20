@@ -85,6 +85,7 @@ class Wires():
                 battery = batteries.dict_batteries[battery_index]
                 if battery.can_connect(house.max_output):
                     wire = self.generate_wire(wire_id, house, battery)
+                    self.connect(house, battery)
                     self.wires[wire_id] = wire
                     wire_id += 1
                     has_battery = True
@@ -94,7 +95,7 @@ class Wires():
         return True
     
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
-        self.connect(house, battery)
+        # self.connect(house, battery)
         wire_path = random_path_finder(house.position,
                                         battery.position)
         # Make new wire
