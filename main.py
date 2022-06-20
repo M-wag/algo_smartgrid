@@ -7,6 +7,7 @@ from calculator import calculate_shared_cost, calculate_own_cost
 from visualize import visualize_grid, visualize_bar
 
 def hillclimber(houses, wires):
+    new_wires = False
     house_1 = houses.random_pick()
     house_2 = houses.random_pick()
     while new_wires == False:
