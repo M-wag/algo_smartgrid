@@ -66,7 +66,6 @@ class Wires():
     def __init__(self) -> None:
         self.wires = {}
         self.shared_wires = {}
-        self.wire_segments = set()
 
     def generate(self, houses: Type[Houses],
                  batteries: Type[Batteries]) -> bool:
@@ -77,7 +76,6 @@ class Wires():
 
         self.wires = {}
         self.shared_wires = {}
-        self.wire_segments = set()
         
         # Iterate through each house them battery
         for house_index in random_order_houses:
@@ -103,9 +101,6 @@ class Wires():
         # Make new wire
         wire = Wire(wire_id, house, battery, wire_path)
         return wire
-
-    def total_wires_segments(self) -> int:
-        return len(self.wire_segments)
 
     def connect(self, house: Type[House], battery: Type[Battery]) -> None:
         house.connect(battery)

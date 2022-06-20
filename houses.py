@@ -1,5 +1,6 @@
 import pandas as pd
 import random
+import numpy as np
 from typing import Dict, Tuple, Type, List
 from batteries import Battery
 
@@ -112,7 +113,7 @@ class Houses():
         return False
 
     def random_pick(self):
-        return random.choices(list(self.dict_houses.values()), k=2)
+        return np.random.choice(list(self.dict_houses.values()))
 
     def disconnect_all(self):
         for house in self.dict_houses.values():
