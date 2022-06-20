@@ -113,7 +113,7 @@ class Wires():
         paths = [wire.path for wire in self.wires.values()]
         return paths
     
-    def swap(self, first_house, second_house) -> Dict[int, Type[Wire]]:
+    def swap(self, first_house, second_house) -> Dict[int, Type[Wire]] or bool:
         first_battery = first_house.battery
         second_battery = second_house.battery
 
