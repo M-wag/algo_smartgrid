@@ -19,6 +19,16 @@ def visualize_bar(cost_record: List[int], output: str) -> None:
 
     plt.savefig(output)
 
+def visualize_hill(cost_record: List[int], output: str) -> None:
+    x_list = [x for x in range(0, len(cost_record))]
+
+    fig, ax = plt.subplots()
+
+    plt.plot(x_list, cost_record, "-b")
+
+    plt.savefig(output)
+    
+
 
 def visualize_grid(house_coords: List[Tuple[int, int]],
                    battery_coords: List[Tuple[int, int]],

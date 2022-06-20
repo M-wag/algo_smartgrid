@@ -1,5 +1,6 @@
 import pandas as pd
 import random
+import numpy as np
 from typing import Dict, Tuple, Type, List
 from batteries import Battery
 
@@ -29,7 +30,8 @@ class House():
         assigns a Battery object to the house
     """
 
-    def __init__(self, position: Tuple[int, int], max_output: float, container) -> None:
+    def __init__(self, id: int, position: Tuple[int, int], max_output: float, container) -> None:
+        self.id = id
         self.position = position
         self.max_output = max_output
         self.battery = None
@@ -42,7 +44,6 @@ class House():
 
     def connect(self, battery: Type[Battery]) -> None:
         self.battery = battery
-        self.container.add_connected_house(self)
 
 
 class Houses():
@@ -87,7 +88,7 @@ class Houses():
         for id, row in df_houses.iterrows():
             position = (int(row['x']), int(row['y']))
             max_output = float(row['maxoutput'])
-            self.dict_houses[id] = House(position, max_output, self)
+            self.dict_houses[id] = House(id, position, max_output, self)
             self.order = list(self.dict_houses.keys())
 
         return self.dict_houses
@@ -110,3 +111,11 @@ class Houses():
         if len(self.connected_houses) == len(self.dict_houses):
             return True
         return False
+
+    def random_pick(self):
+        return np.random.choice(list(self.dict_houses.values()))
+
+    def disconnect_all(self):
+        for house in self.dict_houses.values():
+            house.battery = None
+            

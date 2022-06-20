@@ -3,8 +3,7 @@ import random
 
 
 def random_path_finder(starting_coord: Tuple[int, int],
-                       end_coord: Tuple[int, int],
-                       wire_segments: Set[Tuple]) -> List[Tuple[int, int]]:
+                       end_coord: Tuple[int, int]) -> List[Tuple[int, int]]:
     '''
     Generates a path between start- and end-coordinates,
     adds all wire segments to a set,
@@ -68,6 +67,7 @@ def random_path_finder(starting_coord: Tuple[int, int],
     #         x_path += move[1]
     #     else:
     #         y_path += move[1]
+    #     path.append((x_path, y_path))
         
 
     return path

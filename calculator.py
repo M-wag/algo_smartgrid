@@ -38,7 +38,7 @@ def calculate_own_cost(houses: Type[Houses],
     return total_cost
 
 
-def calculate_shared_cost(wires: Type[Wires],
+def calculate_shared_cost(shared_wires: dict,
                           batteries: Type[Batteries]) -> float:
     '''
     Returns the total cost of the SmartGrid when wires can be shared
@@ -55,7 +55,7 @@ def calculate_shared_cost(wires: Type[Wires],
     '''
 
     total_wire = 0
-    for wire_branch in wires.shared_wires.values():
+    for wire_branch in shared_wires.values():
         total_wire += len(wire_branch.path) - 1
 
     total_batteries = 0
