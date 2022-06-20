@@ -1,4 +1,5 @@
 import argparse
+from copy import deepcopy
 import json
 from houses import Houses
 from batteries import Batteries
@@ -17,32 +18,38 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
     cost_record = []
     count = 0
     # init
-    houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
-    batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
-    wires = Wires()
-    grid = False
-    while grid == False:
-        grid = wires.generate(houses, batteries)
-    wires.shared_wires = wires.share_wires(wires.wires)
-    cost = calculate_shared_cost(wires.shared_wires, batteries)
-    cost_record.append(cost)
+    og_houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
+    og_batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
+    og_wires = Wires()
+    lowest_cost = 999999
     for i in range(iterations):
-        print(f"iteration {i}, cost {cost}")
-        new_wires = hillclimber(houses, wires)
-        new_shared_wires = wires.share_wires(new_wires)
-        new_cost = calculate_shared_cost(new_shared_wires, batteries)
-        if new_cost <= cost:
-            cost = new_cost
-            wires.wires = new_wires
-            wires.shared_wires = new_shared_wires
-            count = 0
-        else:
-            count += 1
+        houses = deepcopy(og_houses)
+        batteries = deepcopy(og_batteries)
+        wires = deepcopy(og_wires)
+        grid = False
+        while grid == False:
+            grid = wires.generate(houses, batteries)
+        wires.shared_wires = wires.share_wires(wires.wires)
+        cost = calculate_shared_cost(wires.shared_wires, batteries)
         cost_record.append(cost)
-        if count >= restart:
-            grid = False
-            while grid == False:
-                grid = wires.generate(houses, batteries)
+        count = 0
+        while count < restart:
+
+            print(f"iteration {i}, cost {cost}")
+            new_wires = hillclimber(houses, wires)
+            new_shared_wires = wires.share_wires(new_wires)
+            new_cost = calculate_shared_cost(new_shared_wires, batteries)
+            if new_cost <= cost:
+                cost = new_cost
+                wires.wires = new_wires
+                wires.shared_wires = new_shared_wires
+                count = 0
+            else:
+                count += 1
+            cost_record.append(cost)
+        if cost < lowest_cost:
+            lowest_cost = cost
+    print(lowest_cost)
     # Plot grid and save
     if save_changes is True:
         visualize_grid(houses.get_member_coords(),
