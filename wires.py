@@ -96,8 +96,7 @@ class Wires():
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         self.connect(house, battery)
         wire_path = random_path_finder(house.position,
-                                        battery.position,
-                                        self.wire_segments)
+                                        battery.position)
         # Make new wire
         wire = Wire(wire_id, house, battery, wire_path)
         return wire
@@ -118,9 +117,9 @@ class Wires():
         second_battery = second_house.battery
 
         #   Connect the first house to the second battery and the second house to the first battery
-        if first_battery.can_connect(second_house) == False:
+        if first_battery.can_connect(second_house.max_output) == False:
             return False
-        if second_battery.can_connect(first_house) == False:
+        if second_battery.can_connect(first_house.max_output) == False:
             return False
 
         h1_b2_wire = self.generate_wire(first_house.id, first_house, second_battery)
