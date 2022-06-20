@@ -30,6 +30,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
     for i in range(iterations):
         print(i, cost)
         new_wires = hillclimber(houses, wires)
+        print('yeet')
         new_shared_wires = wires.share_wires(new_wires)
         new_cost = calculate_shared_cost(new_shared_wires, batteries)
         if new_cost <= cost:
