@@ -4,14 +4,13 @@ from houses import Houses
 from batteries import Batteries
 from wires import Wires
 from calculator import calculate_shared_cost, calculate_own_cost
-from visualize import visualize_grid, visualize_bar
+from visualize import visualize_grid, visualize_bar, visualize_hill
 
 def hillclimber(houses, wires):
     new_wires = False
     while new_wires == False:
-        house_1 = houses.random_pick()
-        house_2 = houses.random_pick()
-        new_wires = wires.swap(house_1, house_2)
+        house_list = houses.random_pick()
+        new_wires = wires.swap(house_list[0], house_list[1])
     return new_wires
 
 def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
@@ -28,7 +27,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
     cost = calculate_shared_cost(wires.shared_wires, batteries)
     cost_record.append(cost)
     for i in range(iterations):
-        print(i, cost)
+        print(f"iteration {i}, cost {cost}")
         new_wires = hillclimber(houses, wires)
         new_shared_wires = wires.share_wires(new_wires)
         new_cost = calculate_shared_cost(new_shared_wires, batteries)
@@ -39,6 +38,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
             count = 0
         else:
             count += 1
+        cost_record.append(cost)
         if count >= restart:
             grid = False
             while grid == False:
@@ -54,7 +54,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
         with open(f'output/smartgrid_wijk_{wijk_num}.json', "w") as outfile:
             outfile.write(json_object)
 
-        visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar.png')
+        visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill.png')
     
 
 
