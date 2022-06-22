@@ -108,8 +108,8 @@ class Wires():
         battery.connect(house)
 
     def get_paths(self) -> List[List[Tuple[int, int]]]:
-        paths = [wire.path for wire in self.wires.values()]
-        return paths
+        colored_paths = [(wire.battery.id, wire.path) for wire in self.wires.values()]
+        return colored_paths
 
     def swap(self, house_1, house_2) -> Dict[int, Type[Wire]]:
         battery_1 = house_1.battery
