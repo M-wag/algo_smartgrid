@@ -29,13 +29,12 @@ class House():
         assigns a Battery object to the house
     """
 
-    def __init__(self, id: int, position: Tuple[int, int], max_output: float, container) -> None:
+    def __init__(self, id: int, position: Tuple[int, int], max_output: float) -> None:
         self.id = id
         self.position = position
         self.max_output = max_output
         self.battery = None
         self.wire = None
-        self.container = container
 
     # assign wire to house
     def assign_wire(self, wire) -> None:
@@ -87,7 +86,7 @@ class Houses():
         for id, row in df_houses.iterrows():
             position = (int(row['x']), int(row['y']))
             max_output = float(row['maxoutput'])
-            self.dict_houses[id] = House(id, position, max_output, self)
+            self.dict_houses[id] = House(id, position, max_output)
             self.order = list(self.dict_houses.keys())
 
         return self.dict_houses
