@@ -1,17 +1,13 @@
-from ..classes.houses import Houses
-from ..classes.batteries import Batteries
-from ..classes.wires import Wires
-from ..calculator import calculate_shared_cost
+from classes.houses import Houses
+from classes.batteries import Batteries
+from classes.wires import Wires
+from calculator import calculate_shared_cost
 import random
 
 
-def simulated_annealing(wijk_num, N, temperature, delta_t):
-
-    # load the data
-    houses = Houses(f'../data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
-    batteries = Batteries(f'../data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
-    wires = Wires()
-
+def simulated_annealing(iterations, temperature, delta_t, wires, batteries, houses):
+    lowest_cost = 9999999
+    cost_record = []
     # initialise a grid
     grid = False
     while grid == False:
@@ -24,7 +20,7 @@ def simulated_annealing(wijk_num, N, temperature, delta_t):
     # initialise the temperature
     t = temperature
 
-    for iteration in range(N):
+    for i in range(iterations):
 
         # swap two houses until a valid solution has been found
         new_grid = False
@@ -57,9 +53,12 @@ def simulated_annealing(wijk_num, N, temperature, delta_t):
         
         # lower the temperature after every iteration
         t -= delta_t
+        cost_record.append(cost)
+        if cost < lowest_cost:
+            lowest_cost = cost
+            lowest_wires = deepcopy(wires)
 
-    return cost
-
+    return lowest_cost, lowest_wires, cost_record
 
 if __name__ == "__main__":
     pass
