@@ -38,6 +38,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
             print(f"iteration {it}, cost {cost}")
             it += 1
             new_wires = hillclimber(houses, wires)
+            print(len(new_wires))
             new_shared_wires = wires.share_wires(new_wires)
             new_cost = calculate_shared_cost(new_shared_wires, batteries)
             print(new_cost)
@@ -52,6 +53,7 @@ def main(wijk_num: str, iterations: int,  restart, save_changes: bool,) -> None:
         if cost < lowest_cost:
             lowest_cost = cost
     print(lowest_cost)
+
     # Plot grid and save
     if save_changes is True:
         visualize_grid(houses.get_member_coords(),
