@@ -58,6 +58,8 @@ def simulated_annealing(wijk_num, N, temperature, delta_t):
         # lower the temperature after every iteration
         t -= delta_t
 
+    return cost
+
 
 if __name__ == "__main__":
     pass

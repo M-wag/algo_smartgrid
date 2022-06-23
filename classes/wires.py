@@ -1,5 +1,5 @@
 from typing import Type, Tuple, List, Dict
-from path_finders import random_pathfinder
+from path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
 from copy import deepcopy
 
 
@@ -95,7 +95,7 @@ class Wires():
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         # self.connect(house, battery)
-        wire_path = random_pathfinder(house.position,
+        wire_path = straight_pathfinder(house.position,
                                         battery.position)
         # Make new wire
         wire = Wire(wire_id, house, battery, wire_path)
