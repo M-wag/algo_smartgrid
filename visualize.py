@@ -32,7 +32,7 @@ def visualize_hill(cost_record: List[int], output: str) -> None:
 
 def visualize_grid(house_coords: List[Tuple[int, int]],
                    battery_coords: List[Tuple[int, int]],
-                   wire_paths: List[List[Tuple[int, int]]], 
+                   wire_paths: Tuple[int, List[List[Tuple[int, int]]]], 
                    output: str) -> None:
     '''
     plots a figure with all houses, batteries and wire-paths
@@ -49,7 +49,8 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
     '''
 
     fig, ax = plt.subplots()
-    for path in wire_paths:
+    colors = ["red", "blue", "green", "purple", "black"]
+    for bat_id, path in wire_paths:
         x = []
         y = []
         for coord in path:
@@ -58,7 +59,7 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
         x = np.array(x)
         y = np.array(y)
 
-        plt.plot(x, y, color='black')
+        plt.plot(x, y, color=colors[bat_id])
 
     for coord in house_coords:
         plt.scatter(coord[0], coord[1], s=25, color='blue', marker='s')
