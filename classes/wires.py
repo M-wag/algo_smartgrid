@@ -1,7 +1,5 @@
-from houses import Houses, House
-from batteries import Batteries, Battery
 from typing import Type, Tuple, List, Dict
-from path_finders import random_path_finder
+from path_finders import random_pathfinder
 from copy import deepcopy
 
 
@@ -23,7 +21,7 @@ class Wire():
         a list of coordinates along which the wire is laid
     """
 
-    def __init__(self, id: int, house: Type[House], battery: Type[Battery],
+    def __init__(self, id: int, house, battery,
                  path: List[Tuple[int, int]]) -> None:
         self.id = id
         self.house = house
@@ -67,8 +65,8 @@ class Wires():
         self.wires = {}
         self.shared_wires = {}
 
-    def generate(self, houses: Type[Houses],
-                 batteries: Type[Batteries]) -> bool:
+    def generate(self, houses,
+                 batteries) -> bool:
 
         # Get random order for iterating houses and batteries
         random_order_houses = houses.shuffle_order()
@@ -97,13 +95,13 @@ class Wires():
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         # self.connect(house, battery)
-        wire_path = random_path_finder(house.position,
+        wire_path = random_pathfinder(house.position,
                                         battery.position)
         # Make new wire
         wire = Wire(wire_id, house, battery, wire_path)
         return wire
 
-    def connect(self, house: Type[House], battery: Type[Battery]) -> None:
+    def connect(self, house, battery) -> None:
         house.connect(battery)
         battery.connect(house)
 

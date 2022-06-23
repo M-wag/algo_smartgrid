@@ -1,9 +1,9 @@
 import argparse
 from copy import deepcopy
 import json
-from houses import Houses
-from batteries import Batteries
-from wires import Wires
+from classes.houses import Houses
+from classes.batteries import Batteries
+from classes.wires import Wires
 from calculator import calculate_shared_cost, calculate_own_cost
 from visualize import visualize_grid, visualize_bar, visualize_hill
 
