@@ -1,6 +1,7 @@
 from typing import Tuple, List, Set
 import random
 import math
+import numpy as np
 
 def calc_distance(L1, L2, P):
     x_start, y_start = L1
@@ -9,7 +10,7 @@ def calc_distance(L1, L2, P):
 
     distance = (abs((x_end - x_start) * (y_start - y_point) - (x_start - x_point) * (y_end - y_start)) 
                 / math.sqrt(((x_end - x_start) ** 2) + ((y_end - y_start) ** 2)))
-    
+
     return distance
 
 def pathfinder_directions(x_path, y_path, x_end, y_end):
@@ -118,15 +119,32 @@ def straight_pathfinder(starting_coord: Tuple[int, int],
     # get the x- and y-directions (1, -1 or 0 equal to the step size)
     x_dir, y_dir = pathfinder_directions(x_path, y_path, x_end, y_end)
 
+    # x_length = x_end - x_path
+    # y_length = y_end - y_path
+    # vector = [x_length, y_length]
+    # vector_norm = vector / np.linalg.norm(vector)
+
     path = [(x_path, y_path)]
-    
+
     while (x_path, y_path) != (x_end, y_end):
-        x_test = (x_path + x_dir, y_path)
-        y_test = (x_path, y_path + y_dir)
+        x_test = [x_path + x_dir, y_path]
+        y_test = [x_path, y_path + y_dir]
 
         # calculate distance from the two point to the house-battery line
         x_move_dis = calc_distance(starting_coord, end_coord, x_test)
         y_move_dis = calc_distance(starting_coord, end_coord, y_test)
+
+        # new_coord = np.add([x_path, y_path], vector_norm)
+
+        # if x_path == x_end:
+        #     y_path += y_dir
+        # elif y_path == y_end:
+        #     x_path += x_dir
+        # elif np.dot(new_coord, x_test) > np.dot(new_coord, y_test):
+        #     x_path += x_dir
+        # else:
+        #     y_path += y_dir
+
 
         # choose the option closest to the line, favoring the x_direction
         if x_path == x_end:
@@ -137,8 +155,8 @@ def straight_pathfinder(starting_coord: Tuple[int, int],
             x_path += x_dir
         else:
             y_path += y_dir
-        
+
         # add the resulting coordinate to the path-list
         path.append((x_path, y_path))
-    
+
     return path

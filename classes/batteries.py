@@ -33,7 +33,7 @@ class Battery:
         self.position = position
         self.capacity = capacity
         self.total_input = 0
-        self.houses = []
+        self.houses = {}
 
     def can_connect(self, house_output: float) -> bool:
         if self.total_input + house_output > self.capacity:
@@ -41,7 +41,8 @@ class Battery:
         return True
 
     def connect(self, house) -> None:
-        self.houses.append(house)
+        print(type(self.houses))
+        self.houses[house.id] = house
         self.total_input += house.max_output
 
 
@@ -100,5 +101,5 @@ class Batteries:
     
     def disconnect_all(self):
         for battery in self.dict_batteries.values():
-            battery.houses = []
+            battery.houses = {}
             battery.total_input = 0

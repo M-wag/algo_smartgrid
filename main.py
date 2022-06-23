@@ -10,9 +10,11 @@ from algorithms.random_algo import random_algo
 
 
 def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_name) -> None:
+
     houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
     batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
     wires = Wires()
+
     if algorithm == 'hillclimber':
         lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
         visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
@@ -20,8 +22,9 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_na
         lowest_cost, lowest_wires = random_algo(iterations, wires ,batteries, houses)
         visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar_{file_name}.png')
     elif algorithm == 'simulated_annealing':
-         lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, delta_t, wires, batteries, houses)
+         lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, 100, wires, batteries, houses)
          visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
+
     # Plot grid and save
     visualize_grid(houses.get_member_coords(),
     batteries.get_member_coords(),

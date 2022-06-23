@@ -1,6 +1,7 @@
 from typing import Type, Tuple, List, Dict
-from path_finders import random_pathfinder
+from path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
 from copy import deepcopy
+import sys
 
 
 class Wire():
@@ -95,7 +96,7 @@ class Wires():
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         # self.connect(house, battery)
-        wire_path = random_pathfinder(house.position,
+        wire_path = hor_vert_pathfinder(house.position,
                                         battery.position)
         # Make new wire
         wire = Wire(wire_id, house, battery, wire_path)
@@ -118,20 +119,37 @@ class Wires():
         
         if battery_2.can_connect(house_2.max_output - house_1.max_output) == False:
             return False
-
-        battery_1.total_input -= house_1.max_output
-        battery_2.total_input -= house_2.max_output
         
-
-        h1_b2_wire = self.generate_wire(tuple((house_1.id, battery_1.id)), house_1, battery_2)
-        h2_b1_wire = self.generate_wire(tuple((house_2.id, battery_1.id)), house_2, battery_1)
-
-        #   Copy wires and replace the wires of passed houses
         swapped_grid = deepcopy(self.wires)
+        swapped_house_1 = deepcopy(house_1)
+        swapped_house_2 = deepcopy(house_2)
+        swapped_battery_1 = deepcopy(battery_1)
+        swapped_battery_2 = deepcopy(battery_2)
+
+        swapped_battery_1.total_input -= swapped_house_1.max_output
+        swapped_battery_2.total_input -= swapped_house_2.max_output
+
+        h1_b2_wire = self.generate_wire((house_1.id, battery_2.id), swapped_house_1, swapped_battery_2)
+        h2_b1_wire = self.generate_wire((house_2.id, battery_1.id), swapped_house_2, swapped_battery_1)
+
+        swapped_grid.pop((house_1.id, battery_1.id))
+        swapped_grid.pop((house_2.id, battery_2.id))
         swapped_grid[h1_b2_wire.id] = h1_b2_wire
         swapped_grid[h2_b1_wire.id] = h2_b1_wire 
 
-        return swapped_grid
+        swapped_house_1.battery = swapped_battery_2
+        swapped_house_2.battery = swapped_battery_1
+
+        swapped_battery_1.houses.pop(house_1.id)
+        swapped_battery_1.houses[swapped_house_2.id] = swapped_house_2
+        swapped_battery_2.houses.pop(house_2.id)
+        swapped_battery_2.houses[swapped_house_1.id] = swapped_house_1
+
+        #   Copy wires and replace the wires of passed houses
+        # print(len(self.wires))
+        # print(len(house_1.battery.houses))
+
+        return (swapped_grid, swapped_house_1, swapped_house_2, swapped_battery_1, swapped_battery_2)
 
 
     def share_wires(self, dict_wire):
