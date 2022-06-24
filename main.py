@@ -1,5 +1,6 @@
 import argparse
 import json
+from re import I
 from classes.houses import Houses
 from classes.batteries import Batteries
 from classes.wires import Wires
@@ -8,6 +9,8 @@ from algorithms.hillclimber import hillclimber
 from algorithms.simulated_annealing import simulated_annealing
 from algorithms.random_algo import random_algo
 
+max_restart_boundary = 2500
+max_iterations = 100000
 
 def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_name) -> None:
 
@@ -25,16 +28,42 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_na
          lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, 100, wires, batteries, houses)
          visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
 
-    # Plot grid and save
+    # Save Grid Plot
     visualize_grid(houses.get_member_coords(),
     batteries.get_member_coords(),
     lowest_wires.get_paths(), f'output/wijk_{wijk_num}_smartgrid_{file_name}.png')
 
+    # Save JSON
     dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
     json_object = json.dumps(dict_json, indent = 2)
     with open(f'output/wijk_{wijk_num}_smartgrid_{file_name}.json', "w") as outfile:
         outfile.write(json_object)
     
+def get_positive_int(input_text, upper_limit):
+    """
+    Get a postive integer through user input, under a certain limit.
+
+    Parameters
+    ----------
+    input_text: str
+        Text showcased in terminal
+    upper_limit : int
+        Upper boundary of positive integers
+    """
+    while True:
+        try:
+            pos_int = int(input(input_text))
+        except ValueError:
+            print('Please pass a integer')
+            continue
+        if pos_int <= 0:
+            print('Make sure the integer is positive')
+            continue
+        if pos_int > upper_limit:
+            print('Passed integer exceeds the upper limit')
+            continue
+        return pos_int
+
 if __name__ == "__main__":
     # Set-up parsing command line arguments
     parser = argparse.ArgumentParser(description=(
@@ -43,17 +72,22 @@ if __name__ == "__main__":
     # Adding arguments
     parser.add_argument("algorithm",
                         help="wijk number)")
-    parser.add_argument("wijk",
-                        help="wijk number)")
-    parser.add_argument("iterations",
-                        help="number of iterations", type=int)
-    parser.add_argument("restart",
-                        help="number of iterations", type=int)
-    parser.add_argument("file_name",
-                        help="number of runs")
 
     # Read arguments from command line
     args = parser.parse_args()
 
+    wijk = get_positive_int('Select neighborhoud:', 3) 
+    iterations = get_positive_int('Iteration amount:', max_iterations)
+    file_name = input('File name:')
+
+    if args.algorithm == 'hc':
+        hill_restart = get_positive_int('Restart boundary for hill climber:', max_restart_boundary)
+    elif args.algorithm == 'sa':
+        hill_restart = 1
+    else:
+        print('No valid argument passed')
+        
     # Run our line function with provided arguments
-    main(args.algorithm, args.wijk, args.iterations, args.restart, args.file_name)
+    main(args.algorithm, wijk, iterations, hill_restart, file_name)
+
+
