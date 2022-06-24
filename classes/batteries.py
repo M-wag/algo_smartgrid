@@ -41,7 +41,6 @@ class Battery:
         return True
 
     def connect(self, house) -> None:
-        print(type(self.houses))
         self.houses[house.id] = house
         self.total_input += house.max_output
 
@@ -94,10 +93,10 @@ class Batteries:
     def get_members(self) -> Tuple[int, Type[Battery]]:
         return self.dict_batteries.values()
 
-    def get_member_coords(self) -> List[Tuple[int, int]]:
-        member_coords = [battery.position for battery in
-                         self.dict_batteries.values()]
-        return member_coords
+    # def get_member_coords(self) -> List[Tuple[int, int]]:
+    #     member_coords = [battery.position for battery in
+    #                      self.dict_batteries.values()]
+    #     return member_coords
     
     def disconnect_all(self):
         for battery in self.dict_batteries.values():

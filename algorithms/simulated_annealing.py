@@ -66,6 +66,3 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
         cost_record.append(cost)
 
     return cost, wires, cost_record
-
-if __name__ == "__main__":
-    pass

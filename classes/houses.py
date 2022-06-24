@@ -98,9 +98,9 @@ class Houses():
     def get_members(self):
         return self.dict_houses.values()
 
-    def get_member_coords(self) -> List[Tuple[int, int]]:
-        member_coords = [house.position for house in self.dict_houses.values()]
-        return member_coords
+    # def get_member_coords(self) -> List[Tuple[int, int]]:
+    #     member_coords = [house.position for house in self.dict_houses.values()]
+    #     return member_coords
 
     def add_connected_house(self, house) -> None:
         self.connected_houses.append(house)
