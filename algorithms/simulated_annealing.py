@@ -47,7 +47,6 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
             if random_nr < r_acceptance:
                 cost = new_cost
             else:
-                print("swapback")
                 wires.swap(house_1, house_2)
 
         # lower the temperature after every iteration

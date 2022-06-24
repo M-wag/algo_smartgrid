@@ -80,7 +80,7 @@ if __name__ == "__main__":
     iterations = get_positive_int('Iteration amount:', max_iterations)
     file_name = input('File name:')
 
-    if args.algorithm == 'hc':
+    if args.algorithm == 'hillclimber':
         hill_restart = get_positive_int('Restart boundary for hill climber:', max_restart_boundary)
     elif args.algorithm == 'simulated_annealing':
         hill_restart = 1
