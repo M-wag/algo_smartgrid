@@ -24,12 +24,10 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
         # swap two houses until a valid solution has been found
         swapped = False
         while swapped == False:
-            house_1, house_2 = 1, 1
-            while house_1 == house_2:
-                house_1 = houses.random_pick()
-                house_2 = houses.random_pick()
+            house_1 = houses.random_pick()
+            house_2 = houses.random_pick()
             swapped = wires.swap(house_1, house_2)
-        new_grid, new_house_1, new_house_2, new_battery_1, new_battery_2 = swapped
+        new_grid = swapped
         
         # calculate new cost
         new_wire_set = wires.share_wires(new_grid)
@@ -38,12 +36,6 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
         # always accept better solutions
         if new_cost < cost:
             cost = new_cost
-            wires.wires = new_grid
-            wires.shared_wires = new_wire_set
-            houses.dict_houses[new_house_1.id] = new_house_1
-            houses.dict_houses[new_house_2.id] = new_house_2
-            batteries.dict_batteries[new_battery_1.id] = new_battery_1
-            batteries.dict_batteries[new_battery_2.id] = new_battery_2
 
         else:
 
@@ -54,12 +46,9 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:
                 cost = new_cost
-                wires.wires = new_grid
-                wires.shared_wires = new_wire_set
-                houses.dict_houses[new_house_1.id] = new_house_1
-                houses.dict_houses[new_house_2.id] = new_house_2
-                batteries.dict_batteries[new_battery_1.id] = new_battery_1
-                batteries.dict_batteries[new_battery_2.id] = new_battery_2
+            else:
+                print("swapback")
+                wires.swap(house_1, house_2)
 
         # lower the temperature after every iteration
         t = temperature - (temperature / iterations) * i

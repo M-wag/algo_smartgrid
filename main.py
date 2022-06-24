@@ -25,12 +25,12 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_na
         lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
         visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar_{file_name}.png')
     elif algorithm == 'simulated_annealing':
-         lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, 100, wires, batteries, houses)
+         lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, 30, wires, batteries, houses)
          visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
 
     # Save Grid Plot
-    visualize_grid(houses.get_member_coords(),
-    batteries.get_member_coords(),
+    visualize_grid(houses.get_members(),
+    batteries.get_members(),
     lowest_wires.get_paths(), f'output/wijk_{wijk_num}_smartgrid_{file_name}.png')
 
     # Save JSON
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     if args.algorithm == 'hc':
         hill_restart = get_positive_int('Restart boundary for hill climber:', max_restart_boundary)
-    elif args.algorithm == 'sa':
+    elif args.algorithm == 'simulated_annealing':
         hill_restart = 1
     else:
         print('No valid argument passed')

@@ -41,7 +41,7 @@ class Battery:
         return True
 
     def connect(self, house) -> None:
-        self.houses[house.id] = house
+        self.houses[str(house.id)] = house
         self.total_input += house.max_output
 
 
