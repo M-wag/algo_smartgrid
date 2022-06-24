@@ -30,8 +30,8 @@ def visualize_hill(cost_record: List[int], output: str) -> None:
     
 
 
-def visualize_grid(house_coords: List[Tuple[int, int]],
-                   battery_coords: List[Tuple[int, int]],
+def visualize_grid(houses: List[Tuple[int, int]],
+                   batteries: List[Tuple[int, int]],
                    wire_paths: Tuple[int, List[List[Tuple[int, int]]]], 
                    output: str) -> None:
     '''
@@ -61,11 +61,11 @@ def visualize_grid(house_coords: List[Tuple[int, int]],
 
         plt.plot(x, y, color=colors[bat_id])
 
-    for coord in house_coords:
-        plt.scatter(coord[0], coord[1], s=25, color='blue', marker='s')
+    for house in houses:
+        plt.scatter(house.position[0], house.position[1], s=25, color=colors[house.battery.id], marker='s')
 
-    for coord in battery_coords:
-        plt.scatter(coord[0], coord[1], s=45, color='red', marker='s')
+    for battery in batteries:
+        plt.scatter(battery.position[0], battery.position[1], s=45, color=colors[battery.id], marker='s')
 
     # Change locators ticks to show every 20.
     ax.xaxis.set_major_locator(MultipleLocator(1))
