@@ -86,6 +86,8 @@ if __name__ == "__main__":
         hill_restart = get_positive_int('Restart boundary for hill climber: ', max_restart_boundary)
     elif args.algorithm == 'simulated_annealing':
         hill_restart = 1
+    elif args.algorithm == "random":
+        hill_restart = 1
     else:
         print('No valid argument passed')
         
