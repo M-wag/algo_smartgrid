@@ -1,6 +1,3 @@
-from classes.houses import Houses
-from classes.batteries import Batteries
-from classes.wires import Wires
 from calculator import calculate_shared_cost
 import random
 
@@ -46,6 +43,8 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:
                 cost = new_cost
+            
+            # otherwise, revert the change
             else:
                 wires.swap(house_1, house_2)
 

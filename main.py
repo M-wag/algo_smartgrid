@@ -1,6 +1,5 @@
 import argparse
 import json
-from re import I
 from classes.houses import Houses
 from classes.batteries import Batteries
 from classes.wires import Wires
