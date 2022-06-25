@@ -28,9 +28,9 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_na
          lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, 100, wires, batteries, houses)
          visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
 
-    # Save Grid Plot
-    visualize_grid(houses.get_member_coords(),
-    batteries.get_member_coords(),
+    # Plot grid and save
+    visualize_grid(houses.get_members(),
+    batteries.get_members(),
     lowest_wires.get_paths(), f'output/wijk_{wijk_num}_smartgrid_{file_name}.png')
 
     # Save JSON
