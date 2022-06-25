@@ -1,6 +1,5 @@
 import argparse
 import json
-from re import I
 from classes.houses import Houses
 from classes.batteries import Batteries
 from classes.wires import Wires
@@ -10,35 +9,41 @@ from algorithms.simulated_annealing import simulated_annealing
 from algorithms.random_algo import random_algo
 
 max_restart_boundary = 2500
-max_iterations = 100000
+max_iterations = 1000000
+max_temperature = 100
+max_temperature_change = 10
+max_reruns = 100
 
-def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, file_name) -> None:
+def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, output, reruns, type_wires) -> None:
+    for rerun in range(reruns):
+        
+        houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
+        batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
+        wires = Wires(type_wires)
 
-    houses = Houses(f'data/district_{wijk_num}/district-{wijk_num}_houses.csv')             # noqa: E501
-    batteries = Batteries(f'data/district_{wijk_num}/district-{wijk_num}_batteries.csv')    # noqa: E501
-    wires = Wires()
+        if algorithm == 'hillclimber':
+            lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
+            visualize_hill(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_hill_{file_name}_run{rerun}.png')
+        elif algorithm == 'random':
+            lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
+            visualize_bar(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_bar_{file_name}_run{rerun}.png')
+        elif algorithm == 'simulated_annealing':
+            file_name = temperature
+            lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
+            visualize_hill(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_hill_{file_name}_run{rerun}.png')
+            temperature = temperature - temp_change
 
-    if algorithm == 'hillclimber':
-        lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
-        visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
-    elif algorithm == 'random':
-        lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
-        visualize_bar(cost_record, f'output/wijk_{wijk_num}_bar_{file_name}.png')
-    elif algorithm == 'simulated_annealing':
-         lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, 100, wires, batteries, houses)
-         visualize_hill(cost_record, f'output/wijk_{wijk_num}_hill_{file_name}.png')
+        # Save Grid Plot
+        visualize_grid(houses.get_members(),
+        batteries.get_members(),
+        lowest_wires.get_paths(), f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_smartgrid_{file_name}_run{rerun}.png')
 
-    # Plot grid and save
-    visualize_grid(houses.get_members(),
-    batteries.get_members(),
-    lowest_wires.get_paths(), f'output/wijk_{wijk_num}_smartgrid_{file_name}.png')
-
-    # Save JSON
-    dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
-    json_object = json.dumps(dict_json, indent = 2)
-    with open(f'output/wijk_{wijk_num}_smartgrid_{file_name}.json', "w") as outfile:
-        outfile.write(json_object)
-    
+        # Save JSON
+        dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
+        json_object = json.dumps(dict_json, indent = 2)
+        with open(f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_smartgrid_{file_name}_run{rerun}.json', "w") as outfile:
+            outfile.write(json_object)
+        
 def get_positive_int(input_text, upper_limit):
     """
     Get a postive integer through user input, under a certain limit.
@@ -71,23 +76,34 @@ if __name__ == "__main__":
 
     # Adding arguments
     parser.add_argument("algorithm",
-                        help="wijk number)")
+                        help="algorithm type)")
 
     # Read arguments from command line
     args = parser.parse_args()
 
-    wijk = get_positive_int('Select neighborhoud:', 3) 
-    iterations = get_positive_int('Iteration amount:', max_iterations)
-    file_name = input('File name:')
+    wijk = get_positive_int('Select neighborhoud: ', 3) 
+    iterations = get_positive_int('Iteration amount: ', max_iterations)
+    type_wires = input('Type of wires: straight or hor_ver: ')
+    output = input('Is this output or test?: ')
+    file_name = input('File name: ')
+    reruns = get_positive_int('Number of runs: ', max_reruns)
 
-    if args.algorithm == 'hc':
-        hill_restart = get_positive_int('Restart boundary for hill climber:', max_restart_boundary)
-    elif args.algorithm == 'sa':
+    if args.algorithm == 'hillclimber':
+        hill_restart = get_positive_int('Restart boundary for hill climber: ', max_restart_boundary)
+        temperature = 1
+        temp_change = 1
+    elif args.algorithm == 'simulated_annealing':
+        temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
+        temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
         hill_restart = 1
+    elif args.algorithm == "random":
+        hill_restart = 1
+        temperature = 1
+        temp_change = 1
     else:
         print('No valid argument passed')
         
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, file_name)
+    main(args.algorithm, wijk, iterations, hill_restart, temp_change, temperature, file_name, output, reruns, type_wires)
 
 
