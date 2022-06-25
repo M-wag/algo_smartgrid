@@ -62,9 +62,10 @@ class Wires():
         returns a list of the paths of all wires contained
     """
 
-    def __init__(self) -> None:
+    def __init__(self, type_wires) -> None:
         self.wires = {}
         self.shared_wires = {}
+        self.path_type = type_wires
 
     def generate(self, houses,
                  batteries) -> bool:
@@ -96,7 +97,11 @@ class Wires():
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         # self.connect(house, battery)
-        wire_path = hor_vert_pathfinder(house.position,
+        if self.path_type == 'hor_ver':
+            wire_path = hor_vert_pathfinder(house.position,
+                                        battery.position)
+        elif self.path_type == 'straight':
+            wire_path = straight_pathfinder(house.position,
                                         battery.position)
         # Make new wire
         wire = Wire(wire_id, house, battery, wire_path)
