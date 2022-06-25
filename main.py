@@ -16,26 +16,31 @@ max_temperature_change = 10
 max_reruns = 100
 
 def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, output, reruns, type_wires) -> None:
-    for rerun in range(reruns):
-        # Current working directory
-        cwd = os.path.abspath(os.getcwd())
-        class_directory = cwd + 'code/classes/'
-        output_directory = cwd + f'output/{file_name}/'
+    # Get current working directory of ran file. Generate directory with classes and directory for outputs
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    class_directory = cwd + f'/data/district_{wijk_num}/district-{wijk_num}_'
+    output_directory, output_base_name = get_output_path(algorithm, wijk_num, type_wires, file_name)
 
+    for rerun in range(reruns):
         houses = Houses(class_directory + 'houses.csv')             # noqa: E501
         batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
         wires = Wires(type_wires)
 
+        base_file_name = cwd + '/code/classes/' + output_directory + f'run{rerun}/' + output_base_name
+        print(base_file_name)
+
         if algorithm == 'hillclimber':
             lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
-            visualize_hill(cost_record, output_location_start + 'hill' + output_location_end) 
+            file_path = base_file_name + '_hill.png'
+            visualize_hill(cost_record, file_path) 
         elif algorithm == 'random':
             lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
-            visualize_bar(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_bar_{file_name}_run{rerun}.png')
+            file_path = base_file_name + '_bar.png'
+            visualize_bar(cost_record, file_path)
         elif algorithm == 'simulated_annealing':
-            file_name = temperature
             lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
-            visualize_hill(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_hill_{file_name}_run{rerun}.png')
+            file_path = base_file_name +  f'temp{temperature}'+ '_hill.png'
+            visualize_hill(cost_record, file_path)
             temperature = temperature - temp_change
         else:
             print('Invalid argument passed to main')
@@ -44,16 +49,35 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         # Save Grid Plot
         visualize_grid(houses.get_members(),
         batteries.get_members(),
-        lowest_wires.get_paths(), f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_smartgrid_{file_name}_run{rerun}.png')
+        lowest_wires.get_paths(), base_file_name + 'grid.png')
         
         # Save JSON
         dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
         json_object = json.dumps(dict_json, indent = 2)
-        with open(f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_smartgrid_{file_name}_run{rerun}.json', "w") as outfile:
+        with open(base_file_name + 'grid.json', "w") as outfile:
             outfile.write(json_object)
         
-def get_save_name()
+def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
+    """
+    Returns both the directory path and the output file path
 
+    Parameters
+    ----------
+    """
+    directory_path = f'{algorithm}/wijk{wijk_number}/{path_method}/{file_name}/'
+    
+    param_acronyms = {
+        'hillclimber' : 'hc',
+        'random' : 'rand',
+        'simulated_annealng' : 'sa',
+        'hor_ver' : 'hv',
+        'straight' : 'st'
+    }
+    output_name = f'{file_name}_{param_acronyms[algorithm]}_w{wijk_number}_{param_acronyms[path_method]}'
+
+    return directory_path, output_name
+
+    
 def get_positive_int(input_text, upper_limit):
     """
     Get a postive integer through user input, under a certain limit.
