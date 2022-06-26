@@ -26,7 +26,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
         wires = Wires(type_wires)
 
-        base_file_name = cwd + '/code/classes/' + output_directory + f'run{rerun}/' + output_base_name
+        base_file_name = cwd + f'/{output}/' + output_directory + f'run{rerun}/' + output_base_name
         print(base_file_name)
 
         if algorithm == 'hillclimber':
@@ -49,12 +49,12 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         # Save Grid Plot
         visualize_grid(houses.get_members(),
         batteries.get_members(),
-        lowest_wires.get_paths(), base_file_name + 'grid.png')
+        lowest_wires.get_paths(), base_file_name + '_grid.png')
         
         # Save JSON
         dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
         json_object = json.dumps(dict_json, indent = 2)
-        with open(base_file_name + 'grid.json', "w") as outfile:
+        with open(base_file_name + '_grid.json', "w") as outfile:
             outfile.write(json_object)
         
 def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
@@ -71,7 +71,7 @@ def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_nam
         'random' : 'rand',
         'simulated_annealng' : 'sa',
         'hor_ver' : 'hv',
-        'straight' : 'st'
+        'straight' : 'str'
     }
     output_name = f'{file_name}_{param_acronyms[algorithm]}_w{wijk_number}_{param_acronyms[path_method]}'
 
