@@ -28,7 +28,6 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
             lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
             visualize_bar(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_bar_{file_name}_run{rerun}.png')
         elif algorithm == 'simulated_annealing':
-            file_name = temperature
             lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
             visualize_hill(cost_record, f'{output}/{algorithm}/wijk{wijk_num}/{type_wires}/wijk_{wijk_num}_hill_{file_name}_run{rerun}.png')
             temperature = temperature - temp_change

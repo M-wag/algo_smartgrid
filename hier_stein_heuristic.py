@@ -39,7 +39,6 @@ def divide_houses(houses, batteries):
     divides houses over the batteries in a most efficient way
     without exceeding the capacities
     """
-
     #TODO: define the most efficient way of packing,
     #      for use in the steiner tree generator
 
