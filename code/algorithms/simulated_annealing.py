@@ -38,7 +38,12 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
 
             # calculate the acceptance chance and generate a random number
             random_nr = random.random()
-            r_acceptance = 2 ** ((cost - new_cost) / t)
+            try: 
+                r_acceptance = 2 ** ((cost - new_cost) / t)
+            except: 
+                r_acceptance = 0
+            
+            print(r_acceptance)
 
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:

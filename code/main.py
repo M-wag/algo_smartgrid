@@ -1,12 +1,12 @@
 import argparse
 import json
-from code.classes.houses import Houses
-from code.classes.batteries import Batteries
-from code.classes.wires import Wires
-from code.visualization.visualize import visualize_grid, visualize_bar, visualize_hill
-from code.algorithms.hillclimber import hillclimber
-from code.algorithms.simulated_annealing import simulated_annealing
-from code.algorithms.random_algo import random_algo
+from classes.houses import Houses
+from classes.batteries import Batteries
+from classes.wires import Wires
+from visualization.visualize import visualize_grid, visualize_bar, visualize_hill
+from algorithms.hillclimber import hillclimber
+from algorithms.simulated_annealing import simulated_annealing
+from algorithms.random_algo import random_algo
 import os
 
 max_restart_boundary = 2500

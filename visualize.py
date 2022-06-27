@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from typing import List, Tuple
 from matplotlib.ticker import (MultipleLocator)
-import os 
 
 
 def round_to_nearest(input: int) -> int:
@@ -17,29 +16,24 @@ def visualize_bar(cost_record: List[int], output: str) -> None:
     values, counts = np.unique(rounded_cost_record, return_counts=True)
 
     plt.bar(x=values, height=counts, width=90)
-    plt.ylabel('Iterations')
-    plt.xlabel('Cost')
-    # Produce directory if it does not exist
-    if os.path.exists(output) == False:
-        new_directory = trim_path(output)
-        os.makedirs(new_directory)
+    plt.xlabel('Iterations')
+    plt.ylabel('Cost')
     plt.savefig(output)
 
 def visualize_hill(cost_record: List[int], output: str) -> None:
     x_list = [x for x in range(0, len(cost_record))]
 
     fig, ax = plt.subplots()
-   
-    plt.ylabel('Iterations')
-    plt.xlabel('Cost')
+
     plt.plot(x_list, cost_record, "-b")
 
-    # Produce directory if it does not exist
-    if os.path.exists(output) == False:
-        new_directory = trim_path(output)
-        os.makedirs(new_directory)
+    plt.ylabel('Iterations')
+    plt.xlabel('Cost')
+
     plt.savefig(output)
     
+
+
 def visualize_grid(houses: List[Tuple[int, int]],
                    batteries: List[Tuple[int, int]],
                    wire_paths: Tuple[int, List[List[Tuple[int, int]]]], 
@@ -47,13 +41,13 @@ def visualize_grid(houses: List[Tuple[int, int]],
     '''
     plots a figure with all houses, batteries and wire-paths
 
-            A list of a
-                   ll wire-paths
-                        
-                   
-                        
-                   
-                       
+            Parameters:
+                    house_coords (List[Tuple[int, int]]): 
+                        A list of house coordinates
+                    battery_coords (List[Tuple[int, int]]): 
+                        A list of battery coordinates
+                    wire_paths (List[List[Tuple[int, int]]]):
+                        A list of all wire-paths
                     output (str):
                         The output-file name
     '''
@@ -70,8 +64,7 @@ def visualize_grid(houses: List[Tuple[int, int]],
         y = np.array(y)
 
         plt.plot(x, y, color=colors[bat_id])
-        ax.set_yticklabels([])
-        ax.set_xticklabels([])
+
     for house in houses:
         plt.scatter(house.position[0], house.position[1], s=25, color=colors[house.battery.id], marker='s')
 
@@ -81,18 +74,10 @@ def visualize_grid(houses: List[Tuple[int, int]],
     # Change locators ticks to show every 20.
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.yaxis.set_major_locator(MultipleLocator(1))
-
+    
     # # Set ticks to every 10
     # ax.set_xticks(np.arange(0, 50, 10))
     # ax.set_yticks(np.arange(0, 50, 10))
 
     plt.grid(True, which='major')
     plt.savefig(output)
-
-def trim_path(path: str) -> str:
-    """Trim the last portion of the path"""
-    path = path.split('/')
-    path.pop()
-    path = ''.join([item + '/' for item in path])
-
-    return path
