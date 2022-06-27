@@ -16,7 +16,8 @@ def visualize_bar(cost_record: List[int], output: str) -> None:
     values, counts = np.unique(rounded_cost_record, return_counts=True)
 
     plt.bar(x=values, height=counts, width=90)
-
+    plt.xlabel('Iterations')
+    plt.ylabel('Cost')
     plt.savefig(output)
 
 def visualize_hill(cost_record: List[int], output: str) -> None:
@@ -25,6 +26,9 @@ def visualize_hill(cost_record: List[int], output: str) -> None:
     fig, ax = plt.subplots()
 
     plt.plot(x_list, cost_record, "-b")
+
+    plt.ylabel('Iterations')
+    plt.xlabel('Cost')
 
     plt.savefig(output)
     
@@ -70,7 +74,7 @@ def visualize_grid(houses: List[Tuple[int, int]],
     # Change locators ticks to show every 20.
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.yaxis.set_major_locator(MultipleLocator(1))
-
+    
     # # Set ticks to every 10
     # ax.set_xticks(np.arange(0, 50, 10))
     # ax.set_yticks(np.arange(0, 50, 10))
