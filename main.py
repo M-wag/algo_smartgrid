@@ -26,7 +26,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
         wires = Wires(type_wires)
 
-        base_file_name = cwd + f'/{output}/' + output_directory + f'run{rerun}/' + output_base_name
+        base_file_name = cwd + f'/{output}/' + output_directory + f'run{rerun}/' + output_base_nam
         print(base_file_name)
 
         if algorithm == 'hillclimber':
