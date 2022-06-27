@@ -1,18 +1,10 @@
-from .calculator import calculate_shared_cost
+from .hillclimber import begin_state, swap_and_cost
 import random
 
 
 def simulated_annealing(iterations, temperature, wires, batteries, houses):
     # initialise a grid
-    grid = False
-    while grid == False:
-        grid = wires.generate(houses, batteries)
-    wires.construct_grid(batteries)
-    
-    # calculate the cost
-    wires.shared_wires = wires.share_wires(wires.wires)
-    cost = calculate_shared_cost(wires.shared_wires, batteries)
-
+    cost = begin_state(wires, batteries, houses)
     # initialise the temperature
     t = temperature
 
@@ -20,16 +12,7 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
     for i in range(iterations):
         print(f"iteration: {i}, cost: {cost}")
         # swap two houses until a valid solution has been found
-        swapped = False
-        while swapped == False:
-            house_1 = houses.random_pick()
-            house_2 = houses.random_pick()
-            swapped = wires.swap(house_1, house_2)
-        new_grid = swapped
-        
-        # calculate new cost
-        new_wire_set = wires.share_wires(new_grid)
-        new_cost = calculate_shared_cost(new_wire_set, batteries)
+        house_1, house_2, new_cost = swap_and_cost(wires, batteries, houses)
 
         # always accept better solutions
         if new_cost < cost:
