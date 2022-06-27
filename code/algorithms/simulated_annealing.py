@@ -7,6 +7,7 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
     grid = False
     while grid == False:
         grid = wires.generate(houses, batteries)
+    wires.construct_grid(batteries)
     
     # calculate the cost
     wires.shared_wires = wires.share_wires(wires.wires)
@@ -42,8 +43,6 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
                 r_acceptance = 2 ** ((cost - new_cost) / t)
             except: 
                 r_acceptance = 0
-            
-            print(r_acceptance)
 
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:

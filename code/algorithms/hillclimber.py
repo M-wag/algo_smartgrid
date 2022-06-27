@@ -11,6 +11,7 @@ def hillclimber(iterations: int,  restart, wires, batteries, houses):
     grid = False
     while grid == False:
         grid = wires.generate(houses, batteries)
+    wires.construct_grid(batteries)
     wires.shared_wires = wires.share_wires(wires.wires)
     cost = calculate_shared_cost(wires.shared_wires, batteries)
     cost_record.append(cost)
@@ -38,6 +39,7 @@ def hillclimber(iterations: int,  restart, wires, batteries, houses):
             grid = False
             while grid == False:
                 grid = wires.generate(houses, batteries)
+            wires.construct_grid(batteries)
             wires.shared_wires = wires.share_wires(wires.wires)
             cost = calculate_shared_cost(wires.shared_wires, batteries)
             count = 0

@@ -15,6 +15,7 @@ def random_algo(iterations, wires, batteries, houses):
         grid = False
         while grid == False:
             grid = wires.generate(houses, batteries)
+        wires.construct_grid(batteries)
 
         wires.shared_wires = wires.share_wires(wires.wires)
         cost = calculate_shared_cost(wires.shared_wires, batteries)
