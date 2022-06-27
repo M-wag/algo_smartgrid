@@ -17,7 +17,8 @@ def visualize_bar(cost_record: List[int], output: str) -> None:
     values, counts = np.unique(rounded_cost_record, return_counts=True)
 
     plt.bar(x=values, height=counts, width=90)
-
+    plt.ylabel('Iterations')
+    plt.xlabel('Cost')
     # Produce directory if it does not exist
     if os.path.exists(output) == False:
         new_directory = trim_path(output)
@@ -28,7 +29,9 @@ def visualize_hill(cost_record: List[int], output: str) -> None:
     x_list = [x for x in range(0, len(cost_record))]
 
     fig, ax = plt.subplots()
-
+   
+    plt.ylabel('Iterations')
+    plt.xlabel('Cost')
     plt.plot(x_list, cost_record, "-b")
 
     # Produce directory if it does not exist
@@ -67,7 +70,8 @@ def visualize_grid(houses: List[Tuple[int, int]],
         y = np.array(y)
 
         plt.plot(x, y, color=colors[bat_id])
-
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
     for house in houses:
         plt.scatter(house.position[0], house.position[1], s=25, color=colors[house.battery.id], marker='s')
 
