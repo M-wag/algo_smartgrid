@@ -22,8 +22,8 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
     output_directory, output_base_name = get_output_path(algorithm, wijk_num, type_wires, file_name)
 
     for rerun in range(reruns):
-        houses = Houses(class_directory + 'houses.csv')             # noqa: E501
-        batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
+        houses = Houses(class_directory + 'houses.csv')
+        batteries = Batteries(class_directory + 'batteries.csv')
         wires = Wires(type_wires)
 
         base_file_name = cwd + f'/{output}/' + output_directory + f'run{rerun}/' + output_base_name
