@@ -1,4 +1,4 @@
-from calculator import calculate_shared_cost
+from .calculator import calculate_shared_cost
 import random
 
 

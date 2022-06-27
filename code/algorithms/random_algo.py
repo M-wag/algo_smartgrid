@@ -1,7 +1,7 @@
-from classes.houses import Houses
-from classes.batteries import Batteries
-from classes.wires import Wires
-from calculator import calculate_shared_cost
+from ..classes.houses import Houses
+from ..classes.batteries import Batteries
+from ..classes.wires import Wires
+from .calculator import calculate_shared_cost
 from copy import deepcopy
 
 def random_algo(iterations, wires, batteries, houses):
