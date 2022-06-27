@@ -57,12 +57,20 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         with open(base_file_name + '_grid.json', "w") as outfile:
             outfile.write(json_object)
         
-def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
+def get_output_path(algorithm: str, wijk_number: int, path_method: str, file_name: str) -> str:
     """
     Returns both the directory path and the output file path
 
     Parameters
     ----------
+    algorithm: str
+        Name of the hueristic/algoritm to be used
+    wijk_number: int
+        ID of the neighborhoud
+    path_method: str
+        The method use for deciding that path wires take
+    file_name: str
+        The file name fo the produced files
     """
     directory_path = f'{algorithm}/wijk{wijk_number}/{path_method}/{file_name}/'
     
