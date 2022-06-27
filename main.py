@@ -1,12 +1,12 @@
 import argparse
 import json
-from classes.houses import Houses
-from classes.batteries import Batteries
-from classes.wires import Wires
-from visualization.visualize import visualize_grid, visualize_bar, visualize_hill
-from algorithms.hillclimber import hillclimber
-from algorithms.simulated_annealing import simulated_annealing
-from algorithms.random_algo import random_algo
+from code.classes.houses import Houses
+from code.classes.batteries import Batteries
+from code.classes.wires import Wires
+from code.visualization.visualize import visualize_grid, visualize_bar, visualize_hill
+from code.algorithms.hillclimber import hillclimber
+from code.algorithms.simulated_annealing import simulated_annealing
+from code.algorithms.random_algo import random_algo
 import os
 
 max_restart_boundary = 2500
@@ -60,7 +60,6 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
 def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
     """
     Returns both the directory path and the output file path
-
     Parameters
     ----------
     """
@@ -81,7 +80,6 @@ def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_nam
 def get_positive_int(input_text, upper_limit):
     """
     Get a postive integer through user input, under a certain limit.
-
     Parameters
     ----------
     input_text: str
@@ -142,5 +140,3 @@ if __name__ == "__main__":
         
     # Run our line function with provided arguments
     main(args.algorithm, wijk, iterations, hill_restart, temp_change, temperature, file_name, output, reruns, type_wires)
-
-
