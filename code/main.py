@@ -11,8 +11,8 @@ import os
 
 max_restart_boundary = 2500
 max_iterations = 1000000
-max_temperature = 100
-max_temperature_change = 10
+max_temperature = 10000
+max_temperature_change = 100
 max_reruns = 100
 
 def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, output, reruns, type_wires) -> None:

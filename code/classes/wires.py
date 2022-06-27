@@ -1,5 +1,5 @@
 from typing import Type, Tuple, List, Dict
-from ..algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
+from algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
 from copy import deepcopy
 
 
