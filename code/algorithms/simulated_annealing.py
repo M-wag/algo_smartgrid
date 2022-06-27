@@ -40,7 +40,7 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
             random_nr = random.random()
             try: 
                 r_acceptance = 2 ** ((cost - new_cost) / t)
-            except: 
+            except OverflowError: 
                 r_acceptance = 0
             
             print(r_acceptance)
