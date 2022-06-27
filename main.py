@@ -69,7 +69,7 @@ def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_nam
     param_acronyms = {
         'hillclimber' : 'hc',
         'random' : 'rand',
-        'simulated_annealng' : 'sa',
+        'simulated_annealing' : 'sa',
         'hor_ver' : 'hv',
         'straight' : 'str'
     }
