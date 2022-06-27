@@ -8,11 +8,15 @@ def random_algo(iterations, wires, batteries, houses):
     lowest_cost = 9999999
     cost_record = []
     for i in range(iterations):
+        # Disconnect all houses and batteries
         houses.disconnect_all()
         batteries.disconnect_all()
+        # Delete all wires
         wires.wires.clear()
+        # Make a grid and calculate cost
         cost = begin_state(wires, batteries, houses)
         cost_record.append(cost)
+        # Save lowest
         if lowest_cost > cost:
             lowest_cost = cost
             lowest_wires = deepcopy(wires)
