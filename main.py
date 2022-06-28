@@ -7,6 +7,7 @@ from code.visualization.visualize import visualize_grid, visualize_bar, visualiz
 from code.algorithms.hillclimber import hillclimber
 from code.algorithms.simulated_annealing import simulated_annealing
 from code.algorithms.random_algo import random_algo
+from code.visualization.exporter import Exporter
 import os
 
 max_restart_boundary = 2500
@@ -15,47 +16,53 @@ max_temperature = 100
 max_temperature_change = 10
 max_reruns = 100
 
-def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, output, reruns, type_wires) -> None:
+def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
     class_directory = cwd + f'/data/district_{wijk_num}/district-{wijk_num}_'
-    output_directory, output_base_name = get_output_path(algorithm, wijk_num, type_wires, file_name)
+
+    output_params = {
+        'cwd' : cwd,
+        'algorithm' : algorithm,
+        'wijk_num' : wijk_num,
+        'iterations' : iterations,
+        'reset_thresh_hc' : restart_hillclimber,
+        'temperature' : temperature,
+        'file_name' : file_name,
+        'path_method' : type_wires
+    }
+
+    exporter = Exporter(output_params)
 
     for rerun in range(reruns):
         houses = Houses(class_directory + 'houses.csv')             # noqa: E501
         batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
         wires = Wires(type_wires)
 
-        base_file_name = cwd + f'/{output}/' + output_directory + f'run{rerun}/' + output_base_nam
-        print(base_file_name)
-
         if algorithm == 'hillclimber':
             lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
-            file_path = base_file_name + '_hill.png'
-            visualize_hill(cost_record, file_path) 
+            exporter.draw_plot(cost_record, 'line')
         elif algorithm == 'random':
             lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
-            file_path = base_file_name + '_bar.png'
-            visualize_bar(cost_record, file_path)
+            exporter.draw_plot(cost_record, 'bar')
         elif algorithm == 'simulated_annealing':
             lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
-            file_path = base_file_name +  f'temp{temperature}'+ '_hill.png'
-            visualize_hill(cost_record, file_path)
             temperature = temperature - temp_change
+            exporter.draw_plot(cost_record, 'line')
         else:
             print('Invalid argument passed to main')
             quit()
 
         # Save Grid Plot
-        visualize_grid(houses.get_members(),
-        batteries.get_members(),
-        lowest_wires.get_paths(), base_file_name + '_grid.png')
+        exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires.get_paths(), lowest_cost)
         
         # Save JSON
         dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
         json_object = json.dumps(dict_json, indent = 2)
-        with open(base_file_name + '_grid.json', "w") as outfile:
+        with open(exporter.get_destination() + '_grid.json', "w") as outfile:
             outfile.write(json_object)
+        # Increment run
+        exporter.run += 1
         
 def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
     """
@@ -121,7 +128,6 @@ if __name__ == "__main__":
     wijk = get_positive_int('Select neighborhoud: ', 3) 
     iterations = get_positive_int('Iteration amount: ', max_iterations)
     type_wires = input('Type of wires: straight or hor_ver: ')
-    output = input('Is this output or test?: ')
     file_name = input('File name: ')
     reruns = get_positive_int('Number of runs: ', max_reruns)
 
@@ -139,4 +145,4 @@ if __name__ == "__main__":
         temp_change = 1
         
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, temp_change, temperature, file_name, output, reruns, type_wires)
+    main(args.algorithm, wijk, iterations, hill_restart, temp_change, temperature, file_name, reruns, type_wires)
