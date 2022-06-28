@@ -60,7 +60,7 @@ def calculate_shared_cost(shared_wires: dict,
     for battery in batteries.get_members():
         total_batteries += 1
 
-    total_cost = total_wire * 9 + total_batteries * 5000
+    total_cost = total_wire * 9 + total_batteries * 5000 + total_batteries * 9
     return total_cost
 
 

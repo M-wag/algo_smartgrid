@@ -88,6 +88,7 @@ class Exporter:
         plt.plot(temp_log, cost_record, 'bo')
 
         plt.savefig(self.get_destination() + '_temp_log')
+        
 
     def draw_grid(self,
                     houses: List[Tuple[int, int]],
@@ -126,11 +127,13 @@ class Exporter:
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
 
+<<<<<<< HEAD
     # def save_to_csv(self):
         
 
+=======
+>>>>>>> 41b73590d950e16207449170cb0e1ce5349b28f8
 
-        
     def get_destination(self) -> str:
         """Return the file destination, make directory if doesn;t alread exist"""
         destination = self.cwd + '/output/' + self.output_directory + f'run{self.run}/' + self.output_base_name + f'_run{self.run}'

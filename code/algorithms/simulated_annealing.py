@@ -1,8 +1,10 @@
 from .hillclimber import begin_state, swap_and_cost
 import random
+from copy import deepcopy
 
 
 def simulated_annealing(iterations, temperature, wires, batteries, houses):
+    lowest_cost = 99999999
     # initialise a grid
     cost = begin_state(wires, batteries, houses)
     # initialise the temperature
@@ -38,5 +40,11 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
         # lower the temperature after every iteration
         t = temperature - (temperature / iterations) * i
         cost_record.append(cost)
+        if lowest_cost > cost:
+            lowest_cost = cost
+            lowest_wires = deepcopy(wires)
+            lowest_batteries = deepcopy(batteries)
+    
+    lowest_wires = lowest_wires.get_paths()
 
-    return cost, wires.get_paths(), cost_record
+    return lowest_cost, lowest_wires, lowest_batteries, cost_record
