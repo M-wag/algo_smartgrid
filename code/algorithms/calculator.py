@@ -1,7 +1,7 @@
 # takes in the amount of wire used and batteries used, and calculates the cost
 from typing import Type
-from classes.batteries import Batteries
-from classes.houses import Houses
+from code.classes.batteries import Batteries
+from code.classes.houses import Houses
 
 def calculate_own_cost(houses: Type[Houses],
                        batteries: Type[Batteries]) -> float:

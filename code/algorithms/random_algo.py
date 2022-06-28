@@ -1,6 +1,6 @@
-from classes.houses import Houses
-from classes.batteries import Batteries
-from classes.wires import Wires
+from code.classes.houses import Houses
+from code.classes.batteries import Batteries
+from code.classes.wires import Wires
 from .hillclimber import begin_state
 from copy import deepcopy
 

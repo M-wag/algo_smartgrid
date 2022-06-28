@@ -1,40 +1,6 @@
 from typing import Type, Tuple, List, Dict
-from algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
-from copy import deepcopy
-
-
-class Wire():
-    """
-    A class to represent a wire.
-
-    ...
-
-    Attributes
-    ----------
-    id : int
-        the wires id
-    house : Type[House]
-        the House object connected to the wire
-    battery : Type[Battery]
-        the Battery object connected to the wire
-    path : List[Tuple[int, int]]
-        a list of coordinates along which the wire is laid
-    """
-
-    def __init__(self, id: int, house, battery,
-                 path: List[Tuple[int, int]]) -> None:
-        self.id = id
-        self.house = house
-        self.battery = battery
-        self.path = path
-
-class Shared_wire:
-    def __init__(self, house, battery, path):
-        self.house_list = []
-        self.house_list.append(house)
-        self.battery = battery
-        self.path = set(path)
-
+from code.algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
+from .wire import Wire, Shared_wire
 class Wires():
     """
     A class to represent a collection of wires.
@@ -93,7 +59,7 @@ class Wires():
     
     def construct_grid(self, batteries):
         for battery in batteries.get_members():
-            for house in battery.houses:
+            for house in battery.houses.values():
                 wire_id = tuple((house.id, battery.id))
                 wire = self.generate_wire(wire_id ,house, battery)
                 self.wires[wire_id] = wire

@@ -16,37 +16,59 @@ class Exporter:
         self.temperature = output_info['temperature']
         self.file_name = output_info['file_name']
         self.path_method = output_info['path_method']
+        self.temp_change = output_info['temp_change']
         self.run = 0
 
         self.output_directory, self.output_base_name = self.get_destination_components(self.algorithm, self.wijk_num, self.path_method, self.file_name)
-    
-    def draw_plot(self, cost_record: List[int], graph: str) -> None:
-        """Save a plot of the produce algorithm data"""
+
+    def visualize_bar(self, cost_record: List[int]) -> None:
+
+        title = f'Random algorithm neigborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+        f'\n iterations: {self.iterations}'
 
         fig, ax = plt.subplots()
-        plt.ylabel('Iterations')
+        plt.title(title)
+        plt.hist(x=cost_record, bins=100, density=True)
+        plt.ylabel('Change')
         plt.xlabel('Cost')
-        plt.ylim(bottom = 0)
-        plt.title(self.get_title('plot', 0))
 
-        if graph == 'bar':
-            rounded_cost_record = [round(i, 2) for i in cost_record]
-            values, counts = np.unique(rounded_cost_record, return_counts=True)
-            plt.bar(x=values, height=counts, width=90)
-            tag = '_bar'
-        elif graph == 'line':
-            x_list = [x for x in range(0, len(cost_record))]
-            plt.plot(x_list, cost_record, "-b")
-            tag = '_hill'
+        plt.savefig(self.get_destination() + '_bar')
 
-        plt.savefig(self.get_destination() + tag)
+    def visualize_hill(self, cost_record: List[int]) -> None:
+        x_list = [x for x in range(0, len(cost_record))]
+
+        fig, ax = plt.subplots()
+        if self.algorithm == 'simulated_annealing':
+            title = f'Simulated annealing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}' 
+        elif self.algorithm == 'hillclimber':
+            title = f'Hillclimbing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+            f'\n iterations: {self.iterations}, reset_threshold: {self.reset_thresh_hc}'
+        plt.title(title)
+        plt.xlabel('Iterations')
+        plt.ylabel('Cost')
+        plt.plot(x_list, cost_record, "-b")
+
+        plt.savefig(self.get_destination() + '_hill')
+    
+    def visualize_temp(self, cost_record, temp_log):
+        fig, ax = plt.subplots()
+        title = f'Simulated annealing - Temperature function neighborhood {self.wijk_num}' + \
+        f'\n {self.path_method}, iterations: {self.iterations}, start_temp: {self.temperature}, temp_change: {self.temp_change}' 
+        plt.title(title)
+        plt.xlabel('Temperature')
+        plt.ylabel('Cost')
+        plt.plot(temp_log, cost_record, 'bo')
+
+        plt.savefig(self.get_destination() + '_temp_log')
 
     def draw_grid(self,
                     houses: List[Tuple[int, int]],
                     batteries: List[Tuple[int, int]],
                     paths: Tuple[int, List[List[Tuple[int, int]]]],
                     grid_cost: int):
-
+        title = f'Grid for {self.algorithm} neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+                f'\n iterations: {self.iterations}, cost: {grid_cost}'
         fig, ax = plt.subplots()
         colors = ["red", "blue", "green", "purple", "black"]
 
@@ -60,7 +82,7 @@ class Exporter:
             y = np.array(y)
 
             plt.plot(x, y , color=colors[bat_id])
-            plt.title(self.get_title('grid', grid_cost))
+            plt.title(title)
             ax.set_yticklabels([])
             ax.set_xticklabels([])
 
@@ -76,38 +98,12 @@ class Exporter:
 
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
-    
-    def get_title(self, vis_target: str, cost: int) -> str:
-        """Produce a title for a generate figure"""
-        if  vis_target == 'plot':
-            if self.algorithm == 'simulated_annealing':
-                title = f'Simulated annealing of wijk{self.wijk_num} using {self.path_method} path method (run{self.run})' + \
-                f'\n iterations: {self.iterations}, temp_start: {self.temperature}' 
-            elif self.algorithm == 'hillclimber':
-                title = f'Hillclimbing of wijk{self.wijk_num} using {self.path_method} path method (run{self.run})' + \
-                f'\n iterations: {self.iterations}, reset_threshold: {self.reset_thresh_hc}' 
-            elif self.algorithm == 'random':
-                title = f'Random Baseline algorithm of wijk{self.wijk_num} using {self.path_method} path method (run{self.run})' + \
-                f'\n iterations: {self.iterations} '
-            else:
-                title = f'Cost for {self.algorithm} of wijk {self.wijk_num} using {self.path_method} (run{self.run})' + \
-                f'\n iterations: {self.iterations}, cost: {cost}'
-        elif vis_target =='grid':
-            if self.algorithm == 'annealing':
-                title = f'Grid for simulated annealing of wijk{self.wijk_num} using {self.path_method} path method (run{self.run})' + \
-                f'\n iterations: {self.iterations}, temp_start: {self.temperature}, cost: {cost}' 
-            elif self.algorithm == 'hillclimber':
-                title = f'Grid for hillclimbing of wijk{self.wijk_num} using {self.path_method} path method (run{self.run})' + \
-                f'\n iterations: {self.iterations}, reset_threshold: {self.reset_thresh_hc}, cost: {cost}' 
-            elif self.algorithm == 'random':
-                title = f'Grid for random baseline algorithm of wijk{self.wijk_num} using {self.path_method} path method (run{self.run})' + \
-                f'\n iterations: {self.iterations}, cost: {cost} '
-            else:
-                title = f'Grid for {self.algorithm} of wijk {self.wijk_num} using {self.path_method} (run{self.run})' + \
-                f'\n iterations: {self.iterations}, cost: {cost}'
-        
-        return title
 
+    def save_to_csv(self):
+        
+
+
+        
     def get_destination(self) -> str:
         """Return the file destination, make directory if doesn;t alread exist"""
         destination = self.cwd + '/output/' + self.output_directory + f'run{self.run}/' + self.output_base_name + f'_run{self.run}'

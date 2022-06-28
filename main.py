@@ -3,7 +3,6 @@ import json
 from code.classes.houses import Houses
 from code.classes.batteries import Batteries
 from code.classes.wires import Wires
-from code.visualization.visualize import visualize_grid, visualize_bar, visualize_hill
 from code.algorithms.hillclimber import hillclimber
 from code.algorithms.simulated_annealing import simulated_annealing
 from code.algorithms.random_algo import random_algo
@@ -12,8 +11,8 @@ import os
 
 max_restart_boundary = 2500
 max_iterations = 1000000
-max_temperature = 100
-max_temperature_change = 10
+max_temperature = 10000
+max_temperature_change = 500
 max_reruns = 100
 
 def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires) -> None:
@@ -29,11 +28,13 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         'reset_thresh_hc' : restart_hillclimber,
         'temperature' : temperature,
         'file_name' : file_name,
-        'path_method' : type_wires
+        'path_method' : type_wires,
+        'temp_change' : temp_change
     }
 
     exporter = Exporter(output_params)
-
+    temp_log = []
+    lowest_cost_record = []
     for rerun in range(reruns):
         houses = Houses(class_directory + 'houses.csv')             # noqa: E501
         batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
@@ -41,14 +42,16 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
 
         if algorithm == 'hillclimber':
             lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
-            exporter.draw_plot(cost_record, 'line')
+            exporter.visualize_hill(cost_record)
         elif algorithm == 'random':
             lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
-            exporter.draw_plot(cost_record, 'bar')
+            exporter.visualize_bar(cost_record)
         elif algorithm == 'simulated_annealing':
             lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
             temperature = temperature - temp_change
-            exporter.draw_plot(cost_record, 'line')
+            temp_log.append(temperature)
+            lowest_cost_record.append(lowest_cost)
+            exporter.visualize_hill(cost_record)
         else:
             print('Invalid argument passed to main')
             quit()
@@ -63,6 +66,11 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
             outfile.write(json_object)
         # Increment run
         exporter.run += 1
+    
+    if algorithm == 'simulated_annealing':
+        print(lowest_cost_record)
+        print(temp_log)
+        exporter.visualize_temp(lowest_cost_record, temp_log)
         
 def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
     """
@@ -145,4 +153,4 @@ if __name__ == "__main__":
         temp_change = 1
         
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, temp_change, temperature, file_name, reruns, type_wires)
+    main(args.algorithm, wijk, iterations, hill_restart, temperature, temp_change, file_name, reruns, type_wires)

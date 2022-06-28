@@ -1,7 +1,7 @@
-from classes.houses import Houses
-from classes.batteries import Batteries
-from classes.wires import Wires
-from algorithms.calculator import calculate_shared_cost
+from code.classes.houses import Houses
+from code.classes.batteries import Batteries
+from code.classes.wires import Wires
+from code.algorithms.calculator import calculate_shared_cost
 from copy import deepcopy
 
 def begin_state(wires, batteries, houses):
