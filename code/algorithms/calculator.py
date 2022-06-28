@@ -62,3 +62,12 @@ def calculate_shared_cost(shared_wires: dict,
 
     total_cost = total_wire * 9 + total_batteries * 5000
     return total_cost
+
+
+def calculate_cluster_cost(wire_branches, batteries):
+    total_cost = 0
+    for branch in wire_branches:
+        total_cost += (len(branch) - 1) * 9
+    total_cost += len(batteries.get_members()) * 5000
+
+    return total_cost

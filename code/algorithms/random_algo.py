@@ -22,4 +22,4 @@ def random_algo(iterations, wires, batteries, houses):
             lowest_wires = deepcopy(wires)
         print(f"iteration: {i}, cost: {cost}")
 
-    return lowest_cost, lowest_wires, cost_record
+    return lowest_cost, lowest_wires.get_paths(), cost_record

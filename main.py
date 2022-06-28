@@ -6,6 +6,7 @@ from code.classes.wires import Wires
 from code.algorithms.hillclimber import hillclimber
 from code.algorithms.simulated_annealing import simulated_annealing
 from code.algorithms.random_algo import random_algo
+from code.algorithms.kmean_simulated_annealing import kmean_simulated_annealing
 from code.visualization.exporter import Exporter
 import os
 
@@ -15,7 +16,7 @@ max_temperature = 10000
 max_temperature_change = 500
 max_reruns = 100
 
-def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires) -> None:
+def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
     class_directory = cwd + f'/data/district_{wijk_num}/district-{wijk_num}_'
@@ -29,6 +30,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         'temperature' : temperature,
         'file_name' : file_name,
         'path_method' : type_wires,
+        'start_state' : start_state,
         'temp_change' : temp_change
     }
 
@@ -52,12 +54,18 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
             temp_log.append(temperature)
             lowest_cost_record.append(lowest_cost)
             exporter.visualize_hill(cost_record)
+        elif algorithm == 'kmean':
+            lowest_cost, lowest_wires, cost_record, score_record = kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, start_state, type_wires)
+            temperature = temperature - temp_change
+            temp_log.append(temperature)
+            lowest_cost_record.append(lowest_cost)
+            exporter.visualize_hill_kmean(cost_record, score_record)
         else:
             print('Invalid argument passed to main')
             quit()
 
         # Save Grid Plot
-        exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires.get_paths(), lowest_cost)
+        exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires, lowest_cost)
         
         # Save JSON
         dict_json = {"district" : wijk_num, "shared-costs" : lowest_cost}
@@ -116,9 +124,12 @@ def get_positive_int(input_text, upper_limit):
             continue
         return pos_int
 
+
 if __name__ == "__main__":
     # List of viable algorithms
-    viable_algorithms = ['hillclimber', 'simulated_annealing', 'random']
+    viable_algorithms = ['hillclimber', 'simulated_annealing',
+                         'random', 'kmean']
+
     # Set-up parsing command line arguments
     parser = argparse.ArgumentParser(description=(
                 "Generates a SmartGrid for input houses and batteries"))
@@ -147,10 +158,18 @@ if __name__ == "__main__":
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
         hill_restart = 1
-    elif args.algorithm == "random":
+    elif args.algorithm == 'random':
         hill_restart = 1
         temperature = 1
         temp_change = 1
+    elif args.algorithm == 'kmean':
+        temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
+        temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
+        start_state = input('Start state algorithm: ')
+        if start_state not in ['random', 'simulated_annealing']:
+            print('Invald algorithm passed to command line')
+            quit()
+        hill_restart = 1
         
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, temperature, temp_change, file_name, reruns, type_wires)
+    main(args.algorithm, wijk, iterations, hill_restart, temperature, temp_change, file_name, reruns, type_wires, start_state)

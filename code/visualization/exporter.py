@@ -16,6 +16,7 @@ class Exporter:
         self.temperature = output_info['temperature']
         self.file_name = output_info['file_name']
         self.path_method = output_info['path_method']
+        self.start_state = output_info['start_state']
         self.temp_change = output_info['temp_change']
         self.run = 0
 
@@ -48,6 +49,32 @@ class Exporter:
         plt.xlabel('Iterations')
         plt.ylabel('Cost')
         plt.plot(x_list, cost_record, "-b")
+
+        plt.savefig(self.get_destination() + '_hill')
+    
+    def visualize_hill_kmean(self, cost_record, score_record):
+        x_list_cost = [x for x in range(0, len(cost_record))]
+        x_list_score = [x for x in range(0, len(score_record))]
+
+        if len(score_record) == 0:
+            fig, ax = plt.subplots()
+            title = f'Simulated annealing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: random' 
+            plt.title(title)
+            plt.xlabel('Iterations')
+            plt.ylabel('Cost')
+            plt.plot(x_list_cost, cost_record, "-b")
+        else:
+            fig, (ax1, ax2) = plt.subplots(1, 2)
+            title = f'Simulated annealing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: simulated annealing' 
+            fig.suptitle(title)
+            ax1.set_xlabel('Iterations')
+            ax1.set_ylabel('Score')
+            ax1.plot(x_list_score, score_record, "-b")
+            ax2.set_xlabel('Iterations')
+            ax2.set_ylabel('Cost')
+            ax2.plot(x_list_cost, cost_record, "-b")
 
         plt.savefig(self.get_destination() + '_hill')
     
@@ -99,7 +126,7 @@ class Exporter:
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
 
-    def save_to_csv(self):
+    # def save_to_csv(self):
         
 
 
@@ -122,6 +149,7 @@ class Exporter:
             'hillclimber' : 'hc',
             'random' : 'rand',
             'simulated_annealing' : 'sa',
+            'kmean' : 'km',
             'hor_ver' : 'hv',
             'straight' : 'str'
         }

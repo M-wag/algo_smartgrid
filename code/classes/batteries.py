@@ -43,6 +43,10 @@ class Battery:
     def connect(self, house) -> None:
         self.houses[str(house.id)] = house
         self.total_input += house.max_output
+    
+    def disconnect(self, house) -> None:
+        self.houses.pop(str(house.id))
+        self.total_input -= house.max_output
 
 
 class Batteries:

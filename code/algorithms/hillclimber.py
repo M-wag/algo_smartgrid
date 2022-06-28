@@ -66,4 +66,4 @@ def hillclimber(iterations: int, restart, wires, batteries, houses):
             lowest_cost = cost
             lowest_wires = deepcopy(wires)
     
-    return lowest_cost, lowest_wires, cost_record
+    return lowest_cost, lowest_wires.get_paths(), cost_record

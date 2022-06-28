@@ -39,4 +39,4 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
         t = temperature - (temperature / iterations) * i
         cost_record.append(cost)
 
-    return cost, wires, cost_record
+    return cost, wires.get_paths(), cost_record
