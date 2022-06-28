@@ -63,6 +63,7 @@ class Wires():
                 wire_id = tuple((house.id, battery.id))
                 wire = self.generate_wire(wire_id ,house, battery)
                 self.wires[wire_id] = wire
+                house.wire = wire
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         # self.connect(house, battery)
