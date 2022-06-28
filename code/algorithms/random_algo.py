@@ -1,24 +1,22 @@
-from ..classes.houses import Houses
-from ..classes.batteries import Batteries
-from ..classes.wires import Wires
-from .calculator import calculate_shared_cost
+from classes.houses import Houses
+from classes.batteries import Batteries
+from classes.wires import Wires
+from .hillclimber import begin_state
 from copy import deepcopy
 
 def random_algo(iterations, wires, batteries, houses):
     lowest_cost = 9999999
     cost_record = []
     for i in range(iterations):
+        # Disconnect all houses and batteries
         houses.disconnect_all()
         batteries.disconnect_all()
+        # Delete all wires
         wires.wires.clear()
-
-        grid = False
-        while grid == False:
-            grid = wires.generate(houses, batteries)
-
-        wires.shared_wires = wires.share_wires(wires.wires)
-        cost = calculate_shared_cost(wires.shared_wires, batteries)
+        # Make a grid and calculate cost
+        cost = begin_state(wires, batteries, houses)
         cost_record.append(cost)
+        # Save lowest
         if lowest_cost > cost:
             lowest_cost = cost
             lowest_wires = deepcopy(wires)

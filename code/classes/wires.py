@@ -1,5 +1,5 @@
 from typing import Type, Tuple, List, Dict
-from ..algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
+from algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
 from copy import deepcopy
 
 
@@ -83,16 +83,20 @@ class Wires():
             for battery_index in random_order_batteries:
                 battery = batteries.dict_batteries[battery_index]
                 if battery.can_connect(house.max_output):
-                    wire_id = tuple((house.id, battery.id))
-                    wire = self.generate_wire(wire_id, house, battery)
                     self.connect(house, battery)
-                    self.wires[wire_id] = wire
                     has_battery = True
                     break
             if has_battery is False:
                 batteries.disconnect_all()
                 return False
         return True
+    
+    def construct_grid(self, batteries):
+        for battery in batteries.get_members():
+            for house in battery.houses:
+                wire_id = tuple((house.id, battery.id))
+                wire = self.generate_wire(wire_id ,house, battery)
+                self.wires[wire_id] = wire
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
         # self.connect(house, battery)
