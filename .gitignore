@@ -15,3 +15,6 @@ test/
 
 #ignore the output directory
 output/
+
+#ignore the docs directory
+docs/
