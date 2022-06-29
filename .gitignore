@@ -13,5 +13,5 @@ __pycache__/
 #ignore the test directory
 test/
 
-# ignore the output directory
+#ignore the output directory
 output/
