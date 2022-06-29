@@ -1,5 +1,6 @@
 import numpy as np
 from .path_finders import hor_vert_pathfinder, straight_pathfinder
+from code.classes.wire import Wire
 from sklearn import cluster, metrics
 
 
@@ -86,54 +87,77 @@ def pick_and_swap(batteries):
     
     return battery_1, house_1, battery_2, house_2
 
-
-def generate_clusters(batteries, type_wires):
+def generate_clusters(batteries, wires, type_wires):
     '''
     Generates clusters per battery and calculates their paths
+    and adds them to the wires class
 
             Parameters:
                     batteries (Batteries):
                         A class containing Battery classes
+                    wires (Wires):
+                        A class containing Wire and Shared_wires classes
                     type_wires ("string"):
                         The wire pathfinding type
 
             Returns:
                     wire_branches (Set[Tuple[int, int]]):
                         A set of all wire coordinates over all batteries
-                    wire_paths (list[List[Tuple[int, int]]):
-                        A list of all wire-paths and their coordinates
     '''
 
-    wire_paths = []
+    # wire_paths = []
     wire_branches = []
+    wire_id = 0
+    wires.wires = {}
     for battery in batteries.get_members():
 
-        nodes = [house.position for house in battery.houses.values()]
+        houses = battery.houses.values()
+        nodes = [house.position for house in houses]
 
         # clusters get selected
         cluster_centers = select_cluster_centers(nodes)
-        
-        # all nodes get connected to their respective cluster_center
-        for node in nodes:
 
-            # cluster is chosen based on distance
-            cluster = get_cluster(node, cluster_centers, battery)
-            if type_wires == "hor_ver":
-                path = hor_vert_pathfinder(node, cluster)
-            else:
-                path = straight_pathfinder(node, cluster)
-            wire_paths.append((battery.id, path))
-            wire_branches.append(set(path))
+        battery_positions = [str(battery.position) for battery in batteries.get_members()]
 
+        cluster_paths = {}
         # path gets drawn from the battery to its clusters
         for cluster in cluster_centers:
             if type_wires == "hor_ver":
-                path = hor_vert_pathfinder(battery.position, cluster)
+                wire_path = hor_vert_pathfinder(cluster, battery.position)
+                cluster_paths[str(cluster)] = wire_path
             else:
-                path = straight_pathfinder(battery.position , cluster)
-            wire_paths.append((battery.id, path))
-    
-    return wire_branches, wire_paths
+                wire_path = straight_pathfinder(cluster , battery.position)
+                cluster_paths[str(cluster)] = wire_path
+
+        # all nodes get connected to their respective cluster_center
+        for node, house in zip(nodes, houses):
+
+            # cluster is chosen based on distance
+            cluster = get_cluster(node, cluster_centers, battery)
+
+            # if a battery is the closer than a cluster, no cluster path
+            if str(cluster) in battery_positions:
+                cluster_path = []
+            else:
+                cluster_path = cluster_paths[str(cluster)]
+
+            # make the wires per house
+            if type_wires == "hor_ver":
+                wire_path = hor_vert_pathfinder(node, cluster) + cluster_path
+                wire = Wire(wire_id, None, battery, wire_path)
+                wires.wires[wire_id] = wire
+                house.wire = wire
+            else:
+                wire_path = straight_pathfinder(node, cluster) + cluster_path
+                wire = Wire(wire_id, None, battery, wire_path)
+                wires.wires[wire_id] = wire
+                house.wire = wire
+            
+            # raise the wire_id by 1 so every wire gets a unique id
+            wire_id += 1
+            wire_branches.append(set(wire_path))
+
+    return wire_branches
 
 
 def select_cluster_centers(nodes):
@@ -162,7 +186,7 @@ def select_cluster_centers(nodes):
         if silhouette_score > highest_score:
             highest_score = silhouette_score
             cluster_centers = kmeans.cluster_centers_
-    
+
     return cluster_centers.astype(int)
     
 

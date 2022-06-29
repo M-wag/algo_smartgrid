@@ -23,6 +23,4 @@ def random_algo(iterations, wires, batteries, houses):
             lowest_batteries = deepcopy(batteries)
         print(f"iteration: {i}, cost: {cost}")
 
-    lowest_wires = lowest_wires.get_paths()
-
     return lowest_cost, lowest_wires, lowest_batteries, cost_record

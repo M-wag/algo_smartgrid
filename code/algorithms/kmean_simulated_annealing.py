@@ -29,7 +29,7 @@ def random_begin_state(wires, batteries, houses, type_wires):
         grid = wires.generate(houses, batteries)
 
     # generate the clusters
-    wire_branches, wire_paths = generate_clusters(batteries, type_wires)
+    wire_branches = generate_clusters(batteries, wires, type_wires)
 
     # calculate cost
     total_cost = calculate_cluster_cost(wire_branches, batteries)
@@ -54,8 +54,8 @@ def simulated_annealing_begin_state(iterations, temperature, wires, batteries, h
                         A class containing Battery objects
                     houses (Houses):
                         A class containing House objects
-                    type_wires ("string"):
-                        The wire pathfinding type
+                    type_wires (str):
+                        A string with the chosen Wire path finding
 
             Returns:
                     cost (int):
@@ -127,21 +127,27 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
                     temperature (int):
                         The starting temperature
                     wires (Wires):
-                        A class containing wire objects
+                        A class containing Wire objects
                     batteries (Batteries):
                         A class containing Battery objects
                     houses (Houses):
                         A class containing House objects   
                     begin_state (string):
                         the chosen begin state of the grid 
+                    type_wires (str):
+                        A string with the chosen Wire path finding
 
             Returns:
                     cost (int):
                         The total cost of the current setup
-                    best_paths (List[List[Tuple[int, int]]]):
-                        A list of all wire paths of the current setup
+                    wires (Wires):
+                        A class containing Wire objects
+                    batteries (Batteries):
+                        A class containing Battery objects
                     cost_record (List[int]):
-                        A list of all recorded "cost" values
+                        A list of all recorded cost values
+                    score_record (List[int]):
+                        A list of all recorded silhouette-score values
     '''
 
     # initialise a grid
@@ -163,7 +169,7 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
         battery_1, house_1, battery_2, house_2 = pick_and_swap(batteries)
 
         # generate the wire branches and individual wire-paths
-        wire_branches, wire_paths = generate_clusters(batteries, type_wires)
+        wire_branches = generate_clusters(batteries, wires, type_wires)
 
         # calculate the new cost of the setup
         new_cost = calculate_cluster_cost(wire_branches, batteries)
@@ -171,7 +177,6 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
         # always accept better solutions
         if new_cost < cost:
             cost = new_cost
-            best_paths = wire_paths
 
         else:
 
@@ -187,7 +192,6 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:
                 cost = new_cost
-                best_paths = wire_paths
             
             # otherwise, revert the change
             else:
@@ -199,4 +203,7 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
         # add the cost to the cost record
         cost_record.append(cost)
 
-    return cost, best_paths, cost_record, score_record
+    # generate the clusters and create the wires for the final setup
+    generate_clusters(batteries, wires, type_wires)
+
+    return cost, wires, batteries, cost_record, score_record

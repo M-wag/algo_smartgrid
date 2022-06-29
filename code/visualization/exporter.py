@@ -127,12 +127,6 @@ class Exporter:
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
 
-<<<<<<< HEAD
-    # def save_to_csv(self):
-        
-
-=======
->>>>>>> 41b73590d950e16207449170cb0e1ce5349b28f8
 
     def get_destination(self) -> str:
         """Return the file destination, make directory if doesn;t alread exist"""

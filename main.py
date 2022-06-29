@@ -38,8 +38,8 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
     temp_log = []
     lowest_cost_record = []
     for rerun in range(reruns):
-        houses = Houses(class_directory + 'houses.csv')             # noqa: E501
-        batteries = Batteries(class_directory + 'batteries.csv')    # noqa: E501
+        houses = Houses(class_directory + 'houses.csv')
+        batteries = Batteries(class_directory + 'batteries.csv')
         wires = Wires(type_wires)
 
         if algorithm == 'hillclimber':
@@ -55,7 +55,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
             lowest_cost_record.append(lowest_cost)
             exporter.visualize_hill(cost_record)
         elif algorithm == 'kmean':
-            lowest_cost, lowest_wires, cost_record, score_record = kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, start_state, type_wires)
+            lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record = kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, start_state, type_wires)
             temperature = temperature - temp_change
             temp_log.append(temperature)
             lowest_cost_record.append(lowest_cost)
@@ -65,7 +65,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
             quit()
 
         # Save Grid Plot
-        exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires, lowest_cost)
+        exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires.get_paths(), lowest_cost)
         
         # Save JSON
         dict_json = [{"district": wijk_num, "costs-shared": lowest_cost}]
@@ -165,14 +165,17 @@ if __name__ == "__main__":
         hill_restart = get_positive_int('Restart boundary for hill climber: ', max_restart_boundary)
         temperature = 1
         temp_change = 1
+        start_state = 1
     elif args.algorithm == 'simulated_annealing': 
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
         hill_restart = 1
+        start_state = 1
     elif args.algorithm == 'random':
         hill_restart = 1
         temperature = 1
         temp_change = 1
+        start_state = 1
     elif args.algorithm == 'kmean':
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
