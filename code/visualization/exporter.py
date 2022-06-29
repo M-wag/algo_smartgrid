@@ -29,7 +29,7 @@ class Exporter:
         fig, ax = plt.subplots()
         plt.title(title)
         plt.hist(x=cost_record, bins=100, density=True)
-        plt.ylabel('Change')
+        plt.ylabel('Chance')
         plt.xlabel('Cost')
 
         plt.savefig(self.get_destination() + '_bar')
