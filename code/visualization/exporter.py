@@ -3,11 +3,8 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple
 from matplotlib.ticker import (MultipleLocator)
 import os 
-<<<<<<< HEAD
 import csv
-=======
 import json
->>>>>>> 187681055409b547e6b97e103c36b502fc58d200
 
 class Exporter: 
     """Class which handles function necessary to export data for Smart Grid Algorithm"""
@@ -92,7 +89,7 @@ class Exporter:
         plt.ylabel('Cost')
         plt.plot(temp_log, cost_record, 'bo')
         temp_directory = self.trim_path(self.get_destination(), 1)
-        plt.savefig('temp_log')
+        plt.savefig(temp_directory + '_temp_log')
 
     def make_csv(self, csv_data: dict)  -> None:
         """Produce a CSV or the run"""
@@ -153,10 +150,6 @@ class Exporter:
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 187681055409b547e6b97e103c36b502fc58d200
     def get_destination(self) -> str:
         """Return the file destination, make directory if doesn;t alread exist"""
         destination = self.cwd + '/output/' + self.output_directory + f'run{self.run}/' + self.output_base_name + f'_run{self.run}'
@@ -183,7 +176,6 @@ class Exporter:
 
         return directory_path, output_name
 
-<<<<<<< HEAD
     def trim_path(self, path: str, iter: int) -> str:
         """Trim the last portion of the path"""
         for i in range(iter):
@@ -192,7 +184,7 @@ class Exporter:
             del(path[0])
             path = ''.join(['/' + item for item in path]) 
         return path
-=======
+
     def make_json(self, lowest_cost, wijk_num, lowest_batteries):
         dict_json = [{"district": wijk_num, "costs-shared": lowest_cost}]
         for battery in lowest_batteries.get_members():
@@ -209,4 +201,3 @@ class Exporter:
         json_object = json.dumps(dict_json, indent = 2)
         with open(self.get_destination() + '_grid.json', "w") as outfile:
             outfile.write(json_object)
->>>>>>> 187681055409b547e6b97e103c36b502fc58d200
