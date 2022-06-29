@@ -3,7 +3,11 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple
 from matplotlib.ticker import (MultipleLocator)
 import os 
+<<<<<<< HEAD
 import csv
+=======
+import json
+>>>>>>> 187681055409b547e6b97e103c36b502fc58d200
 
 class Exporter: 
     """Class which handles function necessary to export data for Smart Grid Algorithm"""
@@ -17,6 +21,7 @@ class Exporter:
         self.temperature = output_info['temperature']
         self.file_name = output_info['file_name']
         self.path_method = output_info['path_method']
+        self.start_state = output_info['start_state']
         self.temp_change = output_info['temp_change']
         self.run = 0
 
@@ -30,7 +35,7 @@ class Exporter:
         fig, ax = plt.subplots()
         plt.title(title)
         plt.hist(x=cost_record, bins=100, density=True)
-        plt.ylabel('Change')
+        plt.ylabel('Chance')
         plt.xlabel('Cost')
 
         plt.savefig(self.get_destination() + '_bar')
@@ -49,6 +54,32 @@ class Exporter:
         plt.xlabel('Iterations')
         plt.ylabel('Cost')
         plt.plot(x_list, cost_record, "-b")
+
+        plt.savefig(self.get_destination() + '_hill')
+    
+    def visualize_hill_kmean(self, cost_record, score_record):
+        x_list_cost = [x for x in range(0, len(cost_record))]
+        x_list_score = [x for x in range(0, len(score_record))]
+
+        if len(score_record) == 0:
+            fig, ax = plt.subplots()
+            title = f'Simulated annealing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: random' 
+            plt.title(title)
+            plt.xlabel('Iterations')
+            plt.ylabel('Cost')
+            plt.plot(x_list_cost, cost_record, "-b")
+        else:
+            fig, (ax1, ax2) = plt.subplots(1, 2)
+            title = f'Simulated annealing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: simulated annealing' 
+            fig.suptitle(title)
+            ax1.set_xlabel('Iterations')
+            ax1.set_ylabel('Score')
+            ax1.plot(x_list_score, score_record, "-b")
+            ax2.set_xlabel('Iterations')
+            ax2.set_ylabel('Cost')
+            ax2.plot(x_list_cost, cost_record, "-b")
 
         plt.savefig(self.get_destination() + '_hill')
     
@@ -80,7 +111,7 @@ class Exporter:
                 if len(col) != max_len:
                     print('Values passed to CSV are of unequal length, unable to align data')
 
-            # Unpack and Zip columns
+            # Unpack _ Zip columns
             cols = zip(*cols)
             for row in cols: 
                 writer.writerow(row)
@@ -122,6 +153,10 @@ class Exporter:
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 187681055409b547e6b97e103c36b502fc58d200
     def get_destination(self) -> str:
         """Return the file destination, make directory if doesn;t alread exist"""
         destination = self.cwd + '/output/' + self.output_directory + f'run{self.run}/' + self.output_base_name + f'_run{self.run}'
@@ -140,6 +175,7 @@ class Exporter:
             'hillclimber' : 'hc',
             'random' : 'rand',
             'simulated_annealing' : 'sa',
+            'kmean' : 'km',
             'hor_ver' : 'hv',
             'straight' : 'str'
         }
@@ -147,6 +183,7 @@ class Exporter:
 
         return directory_path, output_name
 
+<<<<<<< HEAD
     def trim_path(self, path: str, iter: int) -> str:
         """Trim the last portion of the path"""
         for i in range(iter):
@@ -155,3 +192,21 @@ class Exporter:
             del(path[0])
             path = ''.join(['/' + item for item in path]) 
         return path
+=======
+    def make_json(self, lowest_cost, wijk_num, lowest_batteries):
+        dict_json = [{"district": wijk_num, "costs-shared": lowest_cost}]
+        for battery in lowest_batteries.get_members():
+            battery_dict = {"location": f'{battery.position[0]},{battery.position[1]}' ,"capacity": battery.capacity, "houses" :[]}
+            for house in battery.houses.values():
+                house_dict = {"location": f'{house.position[0]},{house.position[1]}', "output": house.max_output}
+                cables = []
+                for wire_point in house.wire.path:
+                    str_wire = f'{wire_point[0]},{wire_point[1]}'
+                    cables.append(str_wire)
+                    house_dict['cables'] = cables
+                battery_dict['houses'].append(house_dict)
+            dict_json.append(battery_dict)
+        json_object = json.dumps(dict_json, indent = 2)
+        with open(self.get_destination() + '_grid.json', "w") as outfile:
+            outfile.write(json_object)
+>>>>>>> 187681055409b547e6b97e103c36b502fc58d200

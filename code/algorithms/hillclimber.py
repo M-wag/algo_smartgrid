@@ -53,7 +53,6 @@ def hillclimber(iterations: int,
         count += 1
         # Do a swap
         house_1, house_2, new_cost = swap_and_cost(wires, batteries, houses)
-        print(f"iteration {i}, lowest_ cost {lowest_cost}, cost {cost}, new_cost {new_cost}, count {count}")
         if new_cost < cost:
             cost = new_cost
             count = 0
@@ -71,5 +70,6 @@ def hillclimber(iterations: int,
         if lowest_cost > cost:
             lowest_cost = cost
             lowest_wires = deepcopy(wires)
-    
-    return lowest_cost, lowest_wires, cost_record
+            lowest_batteries = deepcopy(batteries)
+
+    return lowest_cost, lowest_wires, lowest_batteries, cost_record

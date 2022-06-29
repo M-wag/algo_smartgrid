@@ -25,6 +25,6 @@ def random_algo(iterations: int,
         if lowest_cost > cost:
             lowest_cost = cost
             lowest_wires = deepcopy(wires)
-        print(f"iteration: {i}, cost: {cost}")
+            lowest_batteries = deepcopy(batteries)
 
-    return lowest_cost, lowest_wires, cost_record
+    return lowest_cost, lowest_wires, lowest_batteries, cost_record
