@@ -43,15 +43,19 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         if algorithm == 'hillclimber':
             lowest_cost, lowest_wires, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
             exporter.visualize_hill(cost_record)
+            exporter.make_csv({'cost': cost_record})
         elif algorithm == 'random':
             lowest_cost, lowest_wires, cost_record = random_algo(iterations, wires ,batteries, houses)
             exporter.visualize_bar(cost_record)
+            exporter.make_csv({'cost': cost_record})
         elif algorithm == 'simulated_annealing':
             lowest_cost, lowest_wires, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
-            temperature = temperature - temp_change
+            temperature =- temp_change
             temp_log.append(temperature)
             lowest_cost_record.append(lowest_cost)
             exporter.visualize_hill(cost_record)
+            # To transfer temperature to CSV it must be equal length to cost_record
+            exporter.make_csv({'cost' : cost_record, 'temperature' : [temp_log] * len(cost_record)})
         else:
             print('Invalid argument passed to main')
             quit()
@@ -65,33 +69,14 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         with open(exporter.get_destination() + '_grid.json', "w") as outfile:
             outfile.write(json_object)
         # Increment run
-        exporter.run += 1
+        if exporter.run + 1 != reruns: 
+            exporter.run += 1
     
     if algorithm == 'simulated_annealing':
         print(lowest_cost_record)
         print(temp_log)
         exporter.visualize_temp(lowest_cost_record, temp_log)
         
-def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
-    """
-    Returns both the directory path and the output file path
-    Parameters
-    ----------
-    """
-    directory_path = f'{algorithm}/wijk{wijk_number}/{path_method}/{file_name}/'
-    
-    param_acronyms = {
-        'hillclimber' : 'hc',
-        'random' : 'rand',
-        'simulated_annealing' : 'sa',
-        'hor_ver' : 'hv',
-        'straight' : 'str'
-    }
-    output_name = f'{file_name}_{param_acronyms[algorithm]}_w{wijk_number}_{param_acronyms[path_method]}'
-
-    return directory_path, output_name
-
-    
 def get_positive_int(input_text, upper_limit):
     """
     Get a postive integer through user input, under a certain limit.

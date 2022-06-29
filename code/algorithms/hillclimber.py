@@ -1,10 +1,11 @@
+from typing import Type, Tuple, List
 from code.classes.houses import Houses
 from code.classes.batteries import Batteries
 from code.classes.wires import Wires
 from code.algorithms.calculator import calculate_shared_cost
 from copy import deepcopy
 
-def begin_state(wires, batteries, houses):
+def begin_state(wires: Type[Wires], batteries: Type[Batteries], houses: Type[Houses]):
     grid = False
     # Generate a random grid till a valid grid is found
     while grid == False:
@@ -18,7 +19,7 @@ def begin_state(wires, batteries, houses):
     cost = calculate_shared_cost(wires.shared_wires, batteries)
     return cost
 
-def swap_and_cost(wires, batteries, houses):
+def swap_and_cost(wires: Type[Wires], batteries: Type[Batteries], houses: Type[Houses]):
     swapped = False
     # Swap till you find a valid swap
     while swapped == False:
@@ -35,7 +36,12 @@ def swap_and_cost(wires, batteries, houses):
     new_cost = calculate_shared_cost(new_shared_wires, batteries)
     return house_1, house_2, new_cost
 
-def hillclimber(iterations: int, restart, wires, batteries, houses):
+def hillclimber(iterations: int, 
+                restart: int, 
+                wires: Type[Wires], 
+                batteries: Type[Batteries], 
+                houses: Type[Houses]) -> Tuple[List[int], Type[Wires], int]:
+
     cost_record = []
     count = 0
     lowest_cost = 99999999

@@ -3,8 +3,7 @@ from typing import Type
 from code.classes.batteries import Batteries
 from code.classes.houses import Houses
 
-def calculate_own_cost(houses: Type[Houses],
-                       batteries: Type[Batteries]) -> float:
+def calculate_own_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
     '''
     Returns the total cost of the SmartGrid when cannot be shared
 
@@ -36,8 +35,7 @@ def calculate_own_cost(houses: Type[Houses],
     return total_cost
 
 
-def calculate_shared_cost(shared_wires: dict,
-                          batteries: Type[Batteries]) -> float:
+def calculate_shared_cost(shared_wires: dict, batteries: Type[Batteries]) -> float:
     '''
     Returns the total cost of the SmartGrid when wires can be shared
 
