@@ -12,7 +12,6 @@ def simulated_annealing(iterations, temperature, wires, batteries, houses):
 
     cost_record = [cost]
     for i in range(iterations):
-        print(f"iteration: {i}, cost: {cost}")
         # swap two houses until a valid solution has been found
         house_1, house_2, new_cost = swap_and_cost(wires, batteries, houses)
 

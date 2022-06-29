@@ -47,7 +47,6 @@ def hillclimber(iterations: int, restart, wires, batteries, houses):
         count += 1
         # Do a swap
         house_1, house_2, new_cost = swap_and_cost(wires, batteries, houses)
-        print(f"iteration {i}, lowest_ cost {lowest_cost}, cost {cost}, new_cost {new_cost}, count {count}")
         if new_cost < cost:
             cost = new_cost
             count = 0

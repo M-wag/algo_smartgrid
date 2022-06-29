@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple
 from matplotlib.ticker import (MultipleLocator)
 import os 
+import json
 
 class Exporter: 
     """Class which handles function necessary to export data for Smart Grid Algorithm"""
@@ -153,3 +154,20 @@ class Exporter:
         output_name = f'{file_name}_{param_acronyms[algorithm]}_w{wijk_number}_{param_acronyms[path_method]}'
 
         return directory_path, output_name
+
+    def make_json(self, lowest_cost, wijk_num, lowest_batteries):
+        dict_json = [{"district": wijk_num, "costs-shared": lowest_cost}]
+        for battery in lowest_batteries.get_members():
+            battery_dict = {"location": f'{battery.position[0]},{battery.position[1]}' ,"capacity": battery.capacity, "houses" :[]}
+            for house in battery.houses.values():
+                house_dict = {"location": f'{house.position[0]},{house.position[1]}', "output": house.max_output}
+                cables = []
+                for wire_point in house.wire.path:
+                    str_wire = f'{wire_point[0]},{wire_point[1]}'
+                    cables.append(str_wire)
+                    house_dict['cables'] = cables
+                battery_dict['houses'].append(house_dict)
+            dict_json.append(battery_dict)
+        json_object = json.dumps(dict_json, indent = 2)
+        with open(self.get_destination() + '_grid.json', "w") as outfile:
+            outfile.write(json_object)

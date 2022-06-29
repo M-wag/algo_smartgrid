@@ -1,6 +1,7 @@
 import random
 from .kmean_cluster_functions import *
 from .calculator import calculate_cluster_cost
+from copy import deepcopy
 
 
 def random_begin_state(wires, batteries, houses, type_wires):
@@ -149,7 +150,7 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
                     score_record (List[int]):
                         A list of all recorded silhouette-score values
     '''
-
+    lowest_cost = 999999
     # initialise a grid
     if begin_state == "simulated_annealing":
         cost, score_record = simulated_annealing_begin_state(1000, 100, wires,
@@ -202,8 +203,12 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
         
         # add the cost to the cost record
         cost_record.append(cost)
-
+        if lowest_cost > cost:
+            lowest_cost = cost
+            lowest_wires = deepcopy(wires)
+            lowest_batteries = deepcopy(batteries)
     # generate the clusters and create the wires for the final setup
     generate_clusters(batteries, wires, type_wires)
+    
 
-    return cost, wires, batteries, cost_record, score_record
+    return lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record

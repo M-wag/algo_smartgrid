@@ -1,5 +1,4 @@
 import argparse
-import json
 from code.classes.houses import Houses
 from code.classes.batteries import Batteries
 from code.classes.wires import Wires
@@ -66,23 +65,8 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
 
         # Save Grid Plot
         exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires.get_paths(), lowest_cost)
-        
-        # Save JSON
-        dict_json = [{"district": wijk_num, "costs-shared": lowest_cost}]
-        for battery in lowest_batteries.get_members():
-            battery_dict = {"location": f'{battery.position[0]},{battery.position[1]}' ,"capacity": battery.capacity, "houses" :[]}
-            for house in battery.houses.values():
-                house_dict = {"location": f'{house.position[0]},{house.position[1]}', "output": house.max_output}
-                cables = []
-                for wire_point in house.wire.path:
-                    str_wire = f'{wire_point[0]},{wire_point[1]}'
-                    cables.append(str_wire)
-                    house_dict['cables'] = cables
-                battery_dict['houses'].append(house_dict)
-            dict_json.append(battery_dict)
-        json_object = json.dumps(dict_json, indent = 2)
-        with open(exporter.get_destination() + '_grid.json', "w") as outfile:
-            outfile.write(json_object)
+        exporter.make_json(lowest_cost, wijk_num, lowest_batteries)
+       
         # Increment run
         exporter.run += 1
     
