@@ -66,7 +66,6 @@ class Wires():
                 house.wire = wire
 
     def generate_wire(self, wire_id, house, battery) -> Type[Wire]:
-        # self.connect(house, battery)
         if self.path_type == 'hor_ver':
             wire_path = hor_vert_pathfinder(house.position,
                                         battery.position)
