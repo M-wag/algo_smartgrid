@@ -27,7 +27,7 @@ def cluster_swap(battery_1, house_1, battery_2, house_2):
 
     if not battery_1.can_connect(house_2.max_output - house_1.max_output):
         return False
-    
+
     if not battery_2.can_connect(house_1.max_output - house_2.max_output):
         return False
 
@@ -80,12 +80,13 @@ def pick_and_swap(batteries):
                         A class representing a house, connected to battery_2
     '''
     swapped = False
-    while swapped == False:
+    while swapped is False:
         battery_1, house_1 = random_house_batt_pair(batteries)
         battery_2, house_2 = random_house_batt_pair(batteries)
         swapped = cluster_swap(battery_1, house_1, battery_2, house_2)
-    
+
     return battery_1, house_1, battery_2, house_2
+
 
 def generate_clusters(batteries, wires, type_wires):
     '''
@@ -99,14 +100,8 @@ def generate_clusters(batteries, wires, type_wires):
                         A class containing Wire and Shared_wires classes
                     type_wires ("string"):
                         The wire pathfinding type
-
-            Returns:
-                    wire_branches (Set[Tuple[int, int]]):
-                        A set of all wire coordinates over all batteries
     '''
 
-    # wire_paths = []
-    wire_branches = []
     wire_id = 0
     wires.wires = {}
     for battery in batteries.get_members():
@@ -117,20 +112,22 @@ def generate_clusters(batteries, wires, type_wires):
         # clusters get selected
         cluster_centers = select_cluster_centers(nodes)
 
-        battery_positions = [str(battery.position) for battery in batteries.get_members()]
+        battery_positions = [str(battery.position)
+                             for battery in batteries.get_members()]
 
         cluster_paths = {}
-        # path gets drawn from the battery to its clusters
-        for cluster in cluster_centers:
+        # path gets drawn from the cluster to its battery
+        for cluster in cluster_centers:  # noqa: F402
             if type_wires == "hor_ver":
-                wire_path = hor_vert_pathfinder(cluster, battery.position)
-                cluster_paths[str(cluster)] = wire_path
+                cluster_path = hor_vert_pathfinder(cluster, battery.position)
+                cluster_paths[str(cluster)] = cluster_path
             else:
-                wire_path = straight_pathfinder(cluster , battery.position)
-                cluster_paths[str(cluster)] = wire_path
+                cluster_path = straight_pathfinder(cluster, battery.position)
+                cluster_paths[str(cluster)] = cluster_path
 
         # all nodes get connected to their respective cluster_center
         for node, house in zip(nodes, houses):
+            house.connect(battery)
 
             # cluster is chosen based on distance
             cluster = get_cluster(node, cluster_centers, battery)
@@ -143,21 +140,30 @@ def generate_clusters(batteries, wires, type_wires):
 
             # make the wires per house
             if type_wires == "hor_ver":
-                wire_path = hor_vert_pathfinder(node, cluster) + cluster_path
+
+                # make the path from the house to the cluster
+                house_path = hor_vert_pathfinder(node, cluster)
+
+                # add the path from the cluster to the battery
+                wire_path = house_path + cluster_path
+
                 wire = Wire(wire_id, None, battery, wire_path)
                 wires.wires[wire_id] = wire
                 house.wire = wire
             else:
-                wire_path = straight_pathfinder(node, cluster) + cluster_path
+
+                # make the path from the house to the cluster
+                house_path = straight_pathfinder(node, cluster)
+
+                # add the path from the cluster to the battery
+                wire_path = house_path + cluster_path
+
                 wire = Wire(wire_id, None, battery, wire_path)
                 wires.wires[wire_id] = wire
                 house.wire = wire
-            
+
             # raise the wire_id by 1 so every wire gets a unique id
             wire_id += 1
-            wire_branches.append(set(wire_path))
-
-    return wire_branches
 
 
 def select_cluster_centers(nodes):
@@ -180,15 +186,16 @@ def select_cluster_centers(nodes):
 
     # generate silhouette scores and cluster_centers for k = 3-6
     for k in range(3, 7):
-        kmeans = cluster.KMeans(n_clusters = k).fit(nodes)
+        kmeans = cluster.KMeans(n_clusters=k).fit(nodes)
         labels = kmeans.labels_
-        silhouette_score = metrics.silhouette_score(nodes, labels, metric = 'euclidean')
+        silhouette_score = metrics.silhouette_score(nodes, labels,
+                                                    metric='euclidean')
         if silhouette_score > highest_score:
             highest_score = silhouette_score
             cluster_centers = kmeans.cluster_centers_
 
     return cluster_centers.astype(int)
-    
+
 
 def get_cluster(node, cluster_centers, battery):
     '''
@@ -210,8 +217,8 @@ def get_cluster(node, cluster_centers, battery):
     lowest_distance = 9999
 
     # finds the closest cluster to connect to
-    for cluster in cluster_centers:
-        
+    for cluster in cluster_centers:  # noqa: F402
+
         # manhattan distance
         distance = abs(node[0] - cluster[0]) + abs(node[1] - cluster[1])
 
