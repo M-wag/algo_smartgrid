@@ -16,8 +16,17 @@ max_temperature = 10000
 max_temperature_change = 500
 max_reruns = 100
 
-
-def main(algorithm, district_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state, score_temp) -> None:
+def main(algorithm: str, 
+        district_num: int, 
+        iterations: int, 
+        restart_hillclimber: int, 
+        temperature: int, 
+        temp_change: int,
+        file_name: str, 
+        reruns: int, 
+        type_wires: str, 
+        start_state: str, 
+        score_temp: int) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
     class_directory = cwd + f'/data/district_{district_num}/district-{district_num}_'
