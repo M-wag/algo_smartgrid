@@ -9,13 +9,14 @@ from code.algorithms.kmean_simulated_annealing import kmean_simulated_annealing
 from code.visualization.exporter import Exporter
 import os
 
+
 max_restart_boundary = 2500
 max_iterations = 1000000
 max_temperature = 10000
 max_temperature_change = 500
 max_reruns = 100
 
-def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state) -> None:
+def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state, score_temp) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
     class_directory = cwd + f'/data/district_{wijk_num}/district-{wijk_num}_'
@@ -30,6 +31,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         'file_name' : file_name,
         'path_method' : type_wires,
         'start_state' : start_state,
+        'score_temp' : score_temp,
         'temp_change' : temp_change
     }
 
@@ -56,7 +58,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
             lowest_cost_record.append(lowest_cost)
             exporter.visualize_hill(cost_record)
         elif algorithm == 'kmean':
-            lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record = kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, start_state, type_wires)
+            lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record = kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, start_state, type_wires, score_temp)
             temperature = temperature - temp_change
             temp_log.append(temperature)
             lowest_cost_record.append(lowest_cost)
@@ -133,16 +135,19 @@ if __name__ == "__main__":
         temperature = 1
         temp_change = 1
         start_state = 1
+        score_temp = 1
     elif args.algorithm == 'simulated_annealing': 
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
         hill_restart = 1
         start_state = 1
+        score_temp = 1
     elif args.algorithm == 'random':
         hill_restart = 1
         temperature = 1
         temp_change = 1
         start_state = 1
+        score_temp = 1
     elif args.algorithm == 'kmean':
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
@@ -150,7 +155,11 @@ if __name__ == "__main__":
         if start_state not in ['random', 'simulated_annealing']:
             print('Invald algorithm passed to command line')
             quit()
+        elif start_state == 'simulated_annealing':
+            score_temp = get_positive_int('Temperature for simulated annealing start state: ', max_temperature)
+        else:
+            score_temp = 1
         hill_restart = 1
         
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, temperature, temp_change, file_name, reruns, type_wires, start_state)
+    main(args.algorithm, wijk, iterations, hill_restart, temperature, temp_change, file_name, reruns, type_wires, start_state, score_temp)

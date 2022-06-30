@@ -1,7 +1,7 @@
 import random
-from .kmean_cluster_functions import *
-from .calculator import calculate_cluster_cost
-from copy import deepcopy
+from sklearn import metrics
+from .kmean_cluster_functions import cluster_swap, pick_and_swap, generate_clusters  # noqa: E501
+from .calculator import calculate_shared_cost
 
 
 def random_begin_state(wires, batteries, houses, type_wires):
@@ -15,30 +15,34 @@ def random_begin_state(wires, batteries, houses, type_wires):
                     batteries (Batteries):
                         A class containing Battery objects
                     houses (Houses):
-                        A class containing House objects    
+                        A class containing House objects
                     type_wires ("string"):
                         The wire pathfinding type
 
             Returns:
-                    Total cost (float):
+                    cost (float):
                          The total cost of the SmartGrid
     '''
 
     grid = False
     # Generate a random grid till a valid grid is found
-    while grid == False:
+    while grid is False:
         grid = wires.generate(houses, batteries)
 
     # generate the clusters
-    wire_branches = generate_clusters(batteries, wires, type_wires)
+    generate_clusters(batteries, wires, type_wires)
 
-    # calculate cost
-    total_cost = calculate_cluster_cost(wire_branches, batteries)
+    # generate the shared wires
+    shared_wires = wires.share_wires(wires.wires)
 
-    return total_cost
+    # calculate the cost of the current setup
+    cost = calculate_shared_cost(shared_wires, batteries)
+
+    return cost
 
 
-def simulated_annealing_begin_state(iterations, temperature, wires, batteries, houses, type_wires):
+def simulated_annealing_begin_state(iterations, temperature, wires,
+                                    batteries, houses, type_wires):
     '''
     Divides the houses randomly over the batteries,
     then uses simulated annealing to find a grid with the lowest
@@ -65,11 +69,14 @@ def simulated_annealing_begin_state(iterations, temperature, wires, batteries, h
                         A list of all recorded "best_score" values
     '''
 
-    # initialise a random valid grid
-    cost = random_begin_state(wires, batteries, houses, type_wires)
+    grid = False
+    # Generate a random grid till a valid grid is found
+    while grid is False:
+        grid = wires.generate(houses, batteries)
 
     best_score = -1
     score_record = []
+    t = temperature
     for i in range(iterations):
 
         # swap two houses until a valid setup has been found
@@ -79,46 +86,63 @@ def simulated_annealing_begin_state(iterations, temperature, wires, batteries, h
         all_houses = []
         all_house_labels = []
         for battery in batteries.get_members():
-            battery_houses = [house.position for house in battery.houses.values()]
+            battery_houses = [house.position
+                              for house in battery.houses.values()]
             all_houses += battery_houses
-            all_house_labels += [battery.id for house in battery.houses.values()]
+
+            all_house_labels += [battery.id
+                                 for house in battery.houses.values()]
 
         # calculate the silhouette-score for the current setup
-        silhouette_score = metrics.silhouette_score(all_houses, all_house_labels, metric = 'euclidean')
+        silhou_score = metrics.silhouette_score(all_houses,
+                                                all_house_labels,
+                                                metric='euclidean')
 
         # always accept better solutions
-        if silhouette_score > best_score:
-            best_score = silhouette_score
+        if silhou_score > best_score:
+            best_score = silhou_score
 
         else:
 
             # calculate the acceptance chance and generate a random number
             random_nr = random.random()
             try:
-                # 60000 chosen to not have a miniscule start temperature
-                r_acceptance = 2 ** (((silhouette_score - best_score) * 60000) / t)
+                # 60000 chosen to normalize a good temp choice around 100
+                r_acceptance = 2 ** (((silhou_score - best_score) * 60000) / t)
 
             # as the r_acceptance lowers, the float will become too long
-            except OverflowError: 
+            except OverflowError:
                 r_acceptance = 0
 
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:
-                best_score = silhouette_score
-            
+                best_score = silhou_score
+
             # otherwise, revert the change
             else:
                 cluster_swap(battery_1, house_2, battery_2, house_1)
 
         # lower the temperature after every iteration
         t = temperature - (temperature / iterations) * i
-        
+
         # add the current best score to the score record
         score_record.append(best_score)
+
+    # generate the clusters
+    generate_clusters(batteries, wires, type_wires)
+
+    # generate the shared wires
+    shared_wires = wires.share_wires(wires.wires)
+
+    # calculate the cost of the current setup
+    cost = calculate_shared_cost(shared_wires, batteries)
+
     return cost, score_record
 
 
-def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, begin_state, type_wires):
+def kmean_simulated_annealing(iterations, temperature, wires, batteries,
+                              houses, begin_state, type_wires,
+                              score_temperature):
     '''
     Uses simulated annealing to find a setup with the lowest possible cost
 
@@ -132,9 +156,9 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
                     batteries (Batteries):
                         A class containing Battery objects
                     houses (Houses):
-                        A class containing House objects   
+                        A class containing House objects
                     begin_state (string):
-                        the chosen begin state of the grid 
+                        the chosen begin state of the grid
                     type_wires (str):
                         A string with the chosen Wire path finding
 
@@ -150,11 +174,12 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
                     score_record (List[int]):
                         A list of all recorded silhouette-score values
     '''
-    lowest_cost = 999999
+
     # initialise a grid
     if begin_state == "simulated_annealing":
-        cost, score_record = simulated_annealing_begin_state(1000, 100, wires,
-                                                             batteries, houses,
+        cost, score_record = simulated_annealing_begin_state(1000, score_temperature,  # noqa: E501
+                                                             wires, batteries,
+                                                             houses,
                                                              type_wires)
     else:
         cost = random_begin_state(wires, batteries, houses, type_wires)
@@ -165,15 +190,17 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
 
     cost_record = [cost]
     for i in range(iterations):
-
         # swap two houses until a valid setup has been found
         battery_1, house_1, battery_2, house_2 = pick_and_swap(batteries)
 
         # generate the wire branches and individual wire-paths
-        wire_branches = generate_clusters(batteries, wires, type_wires)
+        generate_clusters(batteries, wires, type_wires)
+
+        # generate the shared wires
+        shared_wires = wires.share_wires(wires.wires)
 
         # calculate the new cost of the setup
-        new_cost = calculate_cluster_cost(wire_branches, batteries)
+        new_cost = calculate_shared_cost(shared_wires, batteries)
 
         # always accept better solutions
         if new_cost < cost:
@@ -183,32 +210,25 @@ def kmean_simulated_annealing(iterations, temperature, wires, batteries, houses,
 
             # calculate the acceptance chance and generate a random number
             random_nr = random.random()
-            try: 
+            try:
                 r_acceptance = 2 ** ((cost - new_cost) / t)
 
             # as the r_acceptance lowers, the float will become too long
-            except OverflowError: 
+            except OverflowError:
                 r_acceptance = 0
 
             # if the random number is lower, accept the changes
             if random_nr < r_acceptance:
                 cost = new_cost
-            
+
             # otherwise, revert the change
             else:
                 cluster_swap(battery_1, house_2, battery_2, house_1)
 
         # lower the temperature after every iteration
         t = temperature - (temperature / iterations) * i
-        
+
         # add the cost to the cost record
         cost_record.append(cost)
-        if lowest_cost > cost:
-            lowest_cost = cost
-            lowest_wires = deepcopy(wires)
-            lowest_batteries = deepcopy(batteries)
-    # generate the clusters and create the wires for the final setup
-    generate_clusters(batteries, wires, type_wires)
-    
 
-    return lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record
+    return cost, wires, batteries, cost_record, score_record

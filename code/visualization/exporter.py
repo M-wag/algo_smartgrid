@@ -19,6 +19,7 @@ class Exporter:
         self.file_name = output_info['file_name']
         self.path_method = output_info['path_method']
         self.start_state = output_info['start_state']
+        self.score_temp = output_info['score_temp']
         self.temp_change = output_info['temp_change']
         self.run = 0
 
@@ -67,12 +68,12 @@ class Exporter:
             plt.ylabel('Cost')
             plt.plot(x_list_cost, cost_record, "-b")
         else:
-            fig, (ax1, ax2) = plt.subplots(1, 2)
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=[2*6.4, 1.5*4.8])
             title = f'Simulated annealing neighborhood {self.wijk_num} - {self.path_method} - run{self.run}' + \
-            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: simulated annealing' 
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: simulated annealing, score_temp: {self.score_temp}' 
             fig.suptitle(title)
             ax1.set_xlabel('Iterations')
-            ax1.set_ylabel('Score')
+            ax1.set_ylabel('Silhouette score')
             ax1.plot(x_list_score, score_record, "-b")
             ax2.set_xlabel('Iterations')
             ax2.set_ylabel('Cost')
