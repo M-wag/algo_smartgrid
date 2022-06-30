@@ -99,7 +99,7 @@ class Exporter:
             writer.writerow(header)
             cols = csv_data.values()
 
-            # Check if values are unequal
+            # Check if valuet us are unequal
             for col in list(cols):
                 # Set max length
                 if len(col) > 1:
