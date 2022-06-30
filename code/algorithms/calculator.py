@@ -3,6 +3,7 @@ from typing import Type
 from code.classes.batteries import Batteries
 from code.classes.houses import Houses
 
+
 def calculate_own_cost(houses: Type[Houses], batteries: Type[Batteries]) -> float:
     '''
     Returns the total cost of the SmartGrid when cannot be shared

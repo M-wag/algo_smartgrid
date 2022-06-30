@@ -43,7 +43,7 @@ class Battery:
     def connect(self, house) -> None:
         self.houses[str(house.id)] = house
         self.total_input += house.max_output
-    
+
     def disconnect(self, house) -> None:
         self.houses.pop(str(house.id))
         self.total_input -= house.max_output
@@ -97,11 +97,6 @@ class Batteries:
     def get_members(self) -> Tuple[int, Type[Battery]]:
         return self.dict_batteries.values()
 
-    # def get_member_coords(self) -> List[Tuple[int, int]]:
-    #     member_coords = [battery.position for battery in
-    #                      self.dict_batteries.values()]
-    #     return member_coords
-    
     def disconnect_all(self):
         for battery in self.dict_batteries.values():
             battery.houses = {}

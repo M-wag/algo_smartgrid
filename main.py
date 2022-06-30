@@ -16,17 +16,18 @@ max_temperature = 10000
 max_temperature_change = 500
 max_reruns = 100
 
-def main(algorithm: str, 
-        district_num: int, 
-        iterations: int, 
-        restart_hillclimber: int, 
-        temperature: int, 
-        temp_change: int,
-        file_name: str, 
-        reruns: int, 
-        type_wires: str, 
-        start_state: str, 
-        score_temp: int) -> None:
+
+def main(algorithm: str,
+         district_num: int,
+         iterations: int,
+         restart_hillclimber: int,
+         temperature: int,
+         temp_change: int,
+         file_name: str,
+         reruns: int,
+         type_wires: str,
+         start_state: str,
+         score_temp: int) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
     class_directory = cwd + f'/data/district_{district_num}/district-{district_num}_'
@@ -85,9 +86,9 @@ def main(algorithm: str,
             lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record = kmean_simulated_annealing(
                                                                                                                 iterations,
                                                                                                                 temperature,
-                                                                                                                wires, 
+                                                                                                                wires,
                                                                                                                 batteries,
-                                                                                                                houses, 
+                                                                                                                houses,
                                                                                                                 start_state,
                                                                                                                 type_wires,
                                                                                                                 score_temp)
@@ -158,7 +159,7 @@ if __name__ == "__main__":
         print('Invald algorithm passed to command line')
         quit()
 
-    wijk = get_positive_int('Select neighborhoud: ', 3)
+    district = get_positive_int('Select neighborhoud: ', 3)
     iterations = get_positive_int('Iteration amount: ', max_iterations)
     type_wires = input('Type of wires: straight or hor_ver: ')
     file_name = input('File name: ')
@@ -200,12 +201,16 @@ if __name__ == "__main__":
         else:
             score_temp = 1
         hill_restart = 1
-        
+
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, temperature, 
-                                                        temp_change, 
-                                                        file_name, 
-                                                        reruns, 
-                                                        type_wires, 
-                                                        start_state,
-                                                        score_temp)
+    main(args.algorithm,
+         district,
+         iterations,
+         hill_restart,
+         temperature,
+         temp_change,
+         file_name,
+         reruns,
+         type_wires,
+         start_state,
+         score_temp)

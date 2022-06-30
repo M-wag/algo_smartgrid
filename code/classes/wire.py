@@ -1,5 +1,7 @@
-from typing import Type, Tuple, List, Dict
+from typing import Tuple, List
 Coordinate = Tuple[int, int]
+
+
 class Wire:
     """
     A class to represent a wire.
@@ -23,6 +25,7 @@ class Wire:
         self.house = house
         self.battery = battery
         self.path = path
+
 
 class Shared_wire:
     """

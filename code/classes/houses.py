@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 import numpy as np
-from typing import Dict, Tuple, Type, List
+from typing import Dict, Tuple, Type
 
 
 class House():
@@ -56,7 +56,7 @@ class Houses():
         a dictionary with all House objects contained
     order : List[int]
         the order in which to iterate over the dictionary
-    connected_houses : List[House]    
+    connected_houses : List[House] 
         a list of all House objects connected to a battery
 
     Methods
@@ -98,7 +98,6 @@ class Houses():
     def get_members(self):
         return self.dict_houses.values()
 
-
     def add_connected_house(self, house) -> None:
         self.connected_houses.append(house)
 
@@ -113,4 +112,3 @@ class Houses():
     def disconnect_all(self):
         for house in self.dict_houses.values():
             house.battery = None
-            
