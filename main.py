@@ -16,23 +16,24 @@ max_temperature = 10000
 max_temperature_change = 500
 max_reruns = 100
 
+
 def main(algorithm, district_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state, score_temp) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
     class_directory = cwd + f'/data/district_{district_num}/district-{district_num}_'
 
     output_params = {
-        'cwd' : cwd,
-        'algorithm' : algorithm,
-        'district_num' : district_num,
-        'iterations' : iterations,
-        'reset_thresh_hc' : restart_hillclimber,
-        'temperature' : temperature,
-        'file_name' : file_name,
-        'path_method' : type_wires,
-        'start_state' : start_state,
-        'score_temp' : score_temp,
-        'temp_change' : temp_change
+        'cwd': cwd,
+        'algorithm': algorithm,
+        'district_num': district_num,
+        'iterations': iterations,
+        'reset_thresh_hc': restart_hillclimber,
+        'temperature': temperature,
+        'file_name': file_name,
+        'path_method': type_wires,
+        'start_state': start_state,
+        'score_temp': score_temp,
+        'temp_change': temp_change
     }
 
     exporter = Exporter(output_params)
@@ -44,25 +45,48 @@ def main(algorithm, district_num: str, iterations: int, restart_hillclimber, tem
         wires = Wires(type_wires)
 
         if algorithm == 'hillclimber':
-            lowest_cost, lowest_wires, lowest_batteries, cost_record = hillclimber(iterations, restart_hillclimber, wires, batteries, houses)
+            lowest_cost, lowest_wires, lowest_batteries, cost_record = hillclimber(iterations,
+                                                                                   restart_hillclimber,
+                                                                                   wires,
+                                                                                   batteries,
+                                                                                   houses)
             exporter.visualize_hill(cost_record)
             exporter.make_csv({'cost': cost_record})
+
         elif algorithm == 'random':
-            lowest_cost, lowest_wires, lowest_batteries, cost_record = random_algo(iterations, wires, batteries, houses)
+            lowest_cost, lowest_wires, lowest_batteries, cost_record = random_algo(iterations,
+                                                                                   wires,
+                                                                                   batteries,
+                                                                                   houses)
             exporter.visualize_bar(cost_record)
             exporter.make_csv({'cost': cost_record})
+
         elif algorithm == 'simulated_annealing':
-            lowest_cost, lowest_wires, lowest_batteries, cost_record = simulated_annealing(iterations, temperature, wires, batteries, houses)
+            lowest_cost, lowest_wires, lowest_batteries, cost_record = simulated_annealing(iterations,
+                                                                                           temperature,
+                                                                                           wires,
+                                                                                           batteries,
+                                                                                           houses)
             temperature = temperature - temp_change
             temp_log.append(temperature)
             lowest_cost_record.append(lowest_cost)
             exporter.visualize_hill(cost_record)
+
         elif algorithm == 'kmean':
-            lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record = kmean_simulated_annealing(iterations, temperature, wires, batteries, houses, start_state, type_wires, score_temp)
+            lowest_cost, lowest_wires, lowest_batteries, cost_record, score_record = kmean_simulated_annealing(
+                                                                                                                iterations,
+                                                                                                                temperature,
+                                                                                                                wires, 
+                                                                                                                batteries,
+                                                                                                                houses, 
+                                                                                                                start_state,
+                                                                                                                type_wires,
+                                                                                                                score_temp)
             temperature = temperature - temp_change
             temp_log.append(temperature)
             lowest_cost_record.append(lowest_cost)
             exporter.visualize_hill_kmean(cost_record, score_record)
+
         else:
             print('Invalid argument passed to main')
             quit()
@@ -70,16 +94,17 @@ def main(algorithm, district_num: str, iterations: int, restart_hillclimber, tem
         # Save Grid Plot
         exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires.get_paths(), lowest_cost)
         exporter.make_json(lowest_cost, district_num, lowest_batteries)
-       
+
         # Increment run
-        if exporter.run + 1 != reruns: 
+        if exporter.run + 1 != reruns:
             exporter.run += 1
-    
+
     if algorithm == 'simulated_annealing':
         print(lowest_cost_record)
         print(temp_log)
         exporter.visualize_temp(lowest_cost_record, temp_log)
-        
+
+
 def get_positive_int(input_text, upper_limit):
     """
     Get a postive integer through user input, under a certain limit.
@@ -124,7 +149,7 @@ if __name__ == "__main__":
         print('Invald algorithm passed to command line')
         quit()
 
-    wijk = get_positive_int('Select neighborhoud: ', 3) 
+    wijk = get_positive_int('Select neighborhoud: ', 3)
     iterations = get_positive_int('Iteration amount: ', max_iterations)
     type_wires = input('Type of wires: straight or hor_ver: ')
     file_name = input('File name: ')
@@ -136,30 +161,42 @@ if __name__ == "__main__":
         temp_change = 1
         start_state = 1
         score_temp = 1
-    elif args.algorithm == 'simulated_annealing': 
+
+    elif args.algorithm == 'simulated_annealing':
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
         hill_restart = 1
         start_state = 1
         score_temp = 1
+
     elif args.algorithm == 'random':
         hill_restart = 1
         temperature = 1
         temp_change = 1
         start_state = 1
         score_temp = 1
+
     elif args.algorithm == 'kmean':
         temperature = get_positive_int('Temperature for simulated annealing: ', max_temperature)
         temp_change = get_positive_int('Temperature change per run for simulated annealing: ', max_temperature_change)
         start_state = input('Start state algorithm: ')
+
         if start_state not in ['random', 'simulated_annealing']:
             print('Invald algorithm passed to command line')
             quit()
+
         elif start_state == 'simulated_annealing':
             score_temp = get_positive_int('Temperature for simulated annealing start state: ', max_temperature)
+
         else:
             score_temp = 1
         hill_restart = 1
         
     # Run our line function with provided arguments
-    main(args.algorithm, wijk, iterations, hill_restart, temperature, temp_change, file_name, reruns, type_wires, start_state, score_temp)
+    main(args.algorithm, wijk, iterations, hill_restart, temperature, 
+                                                        temp_change, 
+                                                        file_name, 
+                                                        reruns, 
+                                                        type_wires, 
+                                                        start_state,
+                                                        score_temp)
