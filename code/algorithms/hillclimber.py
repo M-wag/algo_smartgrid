@@ -5,6 +5,19 @@ from code.algorithms.calculator import calculate_shared_cost
 from copy import deepcopy
 
 def begin_state(wires, batteries, houses):
+    '''
+    Creates a random begin grid and calculates the cost of that grid
+            Parameters:
+                    wires (Wires):
+                        A class representing all the wires
+                    Batteries (Battery):
+                        A class representing all batteries
+                    Houses (House):
+                        A class representing all houses
+
+            Returns:
+                    The cost of the grid
+    '''
     grid = False
     # Generate a random grid till a valid grid is found
     while grid == False:
@@ -19,6 +32,19 @@ def begin_state(wires, batteries, houses):
     return cost
 
 def swap_and_cost(wires, batteries, houses):
+    '''
+    Swaps two houses in de grid and calculates the cost of the new_grid
+            Parameters:
+                    wires (Wires):
+                        A class representing all the wires
+                    Batteries (Battery):
+                        A class representing all batteries
+                    Houses (House):
+                        A class representing all houses
+
+            Returns:
+                    The cost of the new grid
+    '''
     swapped = False
     # Swap till you find a valid swap
     while swapped == False:
@@ -36,6 +62,23 @@ def swap_and_cost(wires, batteries, houses):
     return house_1, house_2, new_cost
 
 def hillclimber(iterations: int, restart, wires, batteries, houses):
+    '''
+    Function to run the hillclimber algorithm
+            Parameters:
+                    Iterations:
+                        Number of times the hillclimber algorithm is run
+                    Restart: 
+                        After how many consecutive times no better grid is found the algorithm should restart
+                    Wires (Wires):
+                        A class representing all the wires
+                    Batteries (Battery):
+                        A class representing all batteries
+                    Houses (House):
+                        A class representing all houses
+
+            Returns:
+                    The lowest cost, the wires and batteries associated with this cost and a list of all the costs
+    '''
     cost_record = []
     count = 0
     lowest_cost = 99999999

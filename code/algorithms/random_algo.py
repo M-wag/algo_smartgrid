@@ -5,6 +5,21 @@ from .hillclimber import begin_state
 from copy import deepcopy
 
 def random_algo(iterations, wires, batteries, houses):
+    '''
+    Function to run the random algorithm
+            Parameters:
+                    Iterations:
+                        Number of times the random algorithm is run
+                    Wires (Wires):
+                        A class representing all the wires
+                    Batteries (Battery):
+                        A class representing all batteries
+                    Houses (House):
+                        A class representing all houses
+
+            Returns:
+                    The lowest cost, the wires and batteries associated with this cost and a list of all the costs
+    '''
     lowest_cost = 9999999
     cost_record = []
     for i in range(iterations):

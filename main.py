@@ -15,15 +15,15 @@ max_temperature = 10000
 max_temperature_change = 500
 max_reruns = 100
 
-def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state) -> None:
+def main(algorithm, district_num: str, iterations: int, restart_hillclimber, temperature, temp_change, file_name, reruns, type_wires, start_state) -> None:
     # Get current working directory of ran file. Generate directory with classes and directory for outputs
     cwd = os.path.dirname(os.path.abspath(__file__))
-    class_directory = cwd + f'/data/district_{wijk_num}/district-{wijk_num}_'
+    class_directory = cwd + f'/data/district_{district_num}/district-{district_num}_'
 
     output_params = {
         'cwd' : cwd,
         'algorithm' : algorithm,
-        'wijk_num' : wijk_num,
+        'district_num' : district_num,
         'iterations' : iterations,
         'reset_thresh_hc' : restart_hillclimber,
         'temperature' : temperature,
@@ -65,7 +65,7 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
 
         # Save Grid Plot
         exporter.draw_grid(houses.get_members(), batteries.get_members(), lowest_wires.get_paths(), lowest_cost)
-        exporter.make_json(lowest_cost, wijk_num, lowest_batteries)
+        exporter.make_json(lowest_cost, district_num, lowest_batteries)
        
         # Increment run
         exporter.run += 1
@@ -75,13 +75,13 @@ def main(algorithm, wijk_num: str, iterations: int, restart_hillclimber, tempera
         print(temp_log)
         exporter.visualize_temp(lowest_cost_record, temp_log)
         
-def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_name: str) -> str:
+def get_output_path(algorithm: str, district_number: str, path_method: str, file_name: str) -> str:
     """
     Returns both the directory path and the output file path
     Parameters
     ----------
     """
-    directory_path = f'{algorithm}/wijk{wijk_number}/{path_method}/{file_name}/'
+    directory_path = f'{algorithm}/wijk{district_number}/{path_method}/{file_name}/'
     
     param_acronyms = {
         'hillclimber' : 'hc',
@@ -90,7 +90,7 @@ def get_output_path(algorithm: str, wijk_number: str, path_method: str, file_nam
         'hor_ver' : 'hv',
         'straight' : 'str'
     }
-    output_name = f'{file_name}_{param_acronyms[algorithm]}_w{wijk_number}_{param_acronyms[path_method]}'
+    output_name = f'{file_name}_{param_acronyms[algorithm]}_w{district_number}_{param_acronyms[path_method]}'
 
     return directory_path, output_name
 
