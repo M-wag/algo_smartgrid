@@ -1,10 +1,11 @@
+from typing import Type, Tuple, List
 from code.classes.houses import Houses
 from code.classes.batteries import Batteries
 from code.classes.wires import Wires
 from code.algorithms.calculator import calculate_shared_cost
 from copy import deepcopy
 
-def begin_state(wires, batteries, houses):
+def begin_state(wires: Type[Wires], batteries: Type[Batteries], houses: Type[Houses]):
     '''
     Creates a random begin grid and calculates the cost of that grid
             Parameters:
@@ -31,7 +32,8 @@ def begin_state(wires, batteries, houses):
     cost = calculate_shared_cost(wires.shared_wires, batteries)
     return cost
 
-def swap_and_cost(wires, batteries, houses):
+    
+def swap_and_cost(wires: Type[Wires], batteries: Type[Batteries], houses: Type[Houses]):
     '''
     Swaps two houses in de grid and calculates the cost of the new_grid
             Parameters:
@@ -60,8 +62,12 @@ def swap_and_cost(wires, batteries, houses):
     # Calculate cost   
     new_cost = calculate_shared_cost(new_shared_wires, batteries)
     return house_1, house_2, new_cost
-
-def hillclimber(iterations: int, restart, wires, batteries, houses):
+    
+def hillclimber(iterations: int, 
+                restart: int, 
+                wires: Type[Wires], 
+                batteries: Type[Batteries], 
+                houses: Type[Houses]) -> Tuple[List[int], Type[Wires], int]:
     '''
     Function to run the hillclimber algorithm
             Parameters:

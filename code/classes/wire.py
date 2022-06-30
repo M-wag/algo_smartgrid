@@ -1,4 +1,5 @@
 from typing import Type, Tuple, List, Dict
+Coordinate = Tuple[int, int]
 class Wire:
     """
     A class to represent a wire.
@@ -17,8 +18,7 @@ class Wire:
         a list of coordinates along which the wire is laid
     """
 
-    def __init__(self, id: int, house, battery,
-                 path: List[Tuple[int, int]]) -> None:
+    def __init__(self, id: int, house, battery, path: List[Coordinate]) -> None:
         self.id = id
         self.house = house
         self.battery = battery
@@ -42,7 +42,7 @@ class Shared_wire:
         a set of unique coordinates along which the wire is laid
     """
 
-    def __init__(self, house, battery, path):
+    def __init__(self, house, battery, path: List[Coordinate]):
         self.house_list = []
         self.house_list.append(house)
         self.battery = battery

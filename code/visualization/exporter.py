@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple
 from matplotlib.ticker import (MultipleLocator)
 import os 
+import csv
 import json
 
 class Exporter: 
@@ -18,6 +19,7 @@ class Exporter:
         self.file_name = output_info['file_name']
         self.path_method = output_info['path_method']
         self.start_state = output_info['start_state']
+        self.score_temp = output_info['score_temp']
         self.temp_change = output_info['temp_change']
         self.run = 0
 
@@ -68,12 +70,12 @@ class Exporter:
             plt.ylabel('Cost')
             plt.plot(x_list_cost, cost_record, "-b")
         else:
-            fig, (ax1, ax2) = plt.subplots(1, 2)
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=[2*6.4, 1.5*4.8])
             title = f'Simulated annealing neighborhood {self.district_num} - {self.path_method} - run{self.run}' + \
-            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: simulated annealing' 
+            f'\n iterations: {self.iterations}, start_temp: {self.temperature}, start_state: simulated annealing, score_temp: {self.score_temp}' 
             fig.suptitle(title)
             ax1.set_xlabel('Iterations')
-            ax1.set_ylabel('Score')
+            ax1.set_ylabel('Silhouette score')
             ax1.plot(x_list_score, score_record, "-b")
             ax2.set_xlabel('Iterations')
             ax2.set_ylabel('Cost')
@@ -90,9 +92,30 @@ class Exporter:
         plt.xlabel('Temperature')
         plt.ylabel('Cost')
         plt.plot(temp_log, cost_record, 'bo')
+        temp_directory = self.trim_path(self.get_destination(), 1)
+        plt.savefig(temp_directory + '_temp_log')
 
-        plt.savefig(self.get_destination() + '_temp_log')
-        
+    def make_csv(self, csv_data: dict)  -> None:
+        """Produce a CSV or the run"""
+        with open(self.get_destination() + '.csv', 'w') as file:
+            writer = csv.writer(file)
+            header = list(csv_data.keys())
+            writer.writerow(header)
+            cols = csv_data.values()
+
+            # Check if values are unequal
+            for col in list(cols):
+                # Set max length
+                if len(col) > 1:
+                    max_len = len(col)
+                # Only one length allowed for values
+                if len(col) != max_len:
+                    print('Values passed to CSV are of unequal length, unable to align data')
+
+            # Unpack _ Zip columns
+            cols = zip(*cols)
+            for row in cols: 
+                writer.writerow(row)
 
     def draw_grid(self,
                     houses: List[Tuple[int, int]],
@@ -132,7 +155,6 @@ class Exporter:
         plt.grid(True, which='major')
         plt.savefig(self.get_destination() + '_grid')
 
-
     def get_destination(self) -> str:
         """Return the file destination, make directory if doesn;t alread exist"""
         destination = self.cwd + '/output/' + self.output_directory + f'run{self.run}/' + self.output_base_name + f'_run{self.run}'
@@ -158,6 +180,15 @@ class Exporter:
         output_name = f'{file_name}_{param_acronyms[algorithm]}_w{district_number}_{param_acronyms[path_method]}'
 
         return directory_path, output_name
+
+    def trim_path(self, path: str, iter: int) -> str:
+        """Trim the last portion of the path"""
+        for i in range(iter):
+            path = path.split('/')
+            path.pop()
+            del(path[0])
+            path = ''.join(['/' + item for item in path]) 
+        return path
 
     def make_json(self, lowest_cost, district_num, lowest_batteries):
         '''Makes a json file of alle the wires, houses and batteries with the district number and the cost'''

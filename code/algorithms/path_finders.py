@@ -1,7 +1,8 @@
-from typing import Tuple, List, Set
+from typing import Tuple, List
 import random
 import math
-import numpy as np
+
+Coordinate = Tuple[int, int]
 
 def calc_distance(L1, L2, P):
     x_start, y_start = L1
@@ -31,8 +32,7 @@ def pathfinder_directions(x_path, y_path, x_end, y_end):
 
     return x_dir, y_dir
 
-def random_pathfinder(starting_coord: Tuple[int, int],
-                       end_coord: Tuple[int, int]) -> List[Tuple[int, int]]:
+def random_pathfinder(starting_coord: Coordinate, end_coord: Coordinate) -> List[Coordinate]:
     '''
     Generates a path between start- and end-coordinates,
     adds all wire segments to a set,
@@ -85,9 +85,7 @@ def random_pathfinder(starting_coord: Tuple[int, int],
     return path
 
 
-def hor_vert_pathfinder(starting_coord: Tuple[int, int],
-                       end_coord: Tuple[int, int]) -> List[Tuple[int, int]]:
-
+def hor_vert_pathfinder(starting_coord: Coordinate, end_coord: Coordinate) -> List[Coordinate]:
     # Get X and Y for starting- and end-coord
     x_path, y_path = starting_coord
     x_end, y_end = end_coord
@@ -110,8 +108,7 @@ def hor_vert_pathfinder(starting_coord: Tuple[int, int],
 
     return path
 
-def straight_pathfinder(starting_coord: Tuple[int, int],
-                       end_coord: Tuple[int, int]) -> List[Tuple[int, int]]:
+def straight_pathfinder(starting_coord: Coordinate, end_coord: Coordinate) -> List[Coordinate]:
     # Get X and Y for starting- and end-coord
     x_path, y_path = starting_coord
     x_end, y_end = end_coord

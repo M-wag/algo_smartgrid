@@ -3,8 +3,12 @@ from code.classes.batteries import Batteries
 from code.classes.wires import Wires
 from .hillclimber import begin_state
 from copy import deepcopy
+from typing import Type
 
-def random_algo(iterations, wires, batteries, houses):
+def random_algo(iterations: int, 
+                wires: Type[Wires], 
+                batteries: Type[Batteries], 
+                houses: Type[Houses]):
     '''
     Function to run the random algorithm
             Parameters:

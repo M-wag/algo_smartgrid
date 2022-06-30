@@ -1,6 +1,9 @@
 from typing import Type, Tuple, List, Dict
 from code.algorithms.path_finders import hor_vert_pathfinder, random_pathfinder, straight_pathfinder
 from .wire import Wire, Shared_wire
+
+Coordinate = Tuple[int, int]
+
 class Wires():
     """
     A class to represent a collection of wires.
@@ -27,13 +30,12 @@ class Wires():
         returns a list of the paths of all wires contained
     """
 
-    def __init__(self, type_wires) -> None:
+    def __init__(self, type_wires: str) -> None:
         self.wires = {}
         self.shared_wires = {}
         self.path_type = type_wires
 
-    def generate(self, houses,
-                 batteries) -> bool:
+    def generate(self, houses, batteries) -> bool:
 
         # Get random order for iterating houses and batteries
         random_order_houses = houses.shuffle_order()
@@ -80,7 +82,7 @@ class Wires():
         house.connect(battery)
         battery.connect(house)
 
-    def get_paths(self) -> List[List[Tuple[int, int]]]:
+    def get_paths(self) -> List[List[Coordinate]]:
         colored_paths = [(wire.battery.id, wire.path) for wire in self.wires.values()]
         return colored_paths
 
