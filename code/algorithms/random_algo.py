@@ -5,9 +5,10 @@ from .hillclimber import begin_state
 from copy import deepcopy
 from typing import Type
 
-def random_algo(iterations: int, 
-                wires: Type[Wires], 
-                batteries: Type[Batteries], 
+
+def random_algo(iterations: int,
+                wires: Type[Wires],
+                batteries: Type[Batteries],
                 houses: Type[Houses]):
     '''
     Function to run the random algorithm

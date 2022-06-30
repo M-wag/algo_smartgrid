@@ -56,7 +56,7 @@ class Houses():
         a dictionary with all House objects contained
     order : List[int]
         the order in which to iterate over the dictionary
-    connected_houses : List[House] 
+    connected_houses : List[House]
         a list of all House objects connected to a battery
 
     Methods
